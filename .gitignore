@@ -1,1 +1,58 @@
+# Node modules (root and any subfolders)
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+**/dist/
+.vite/
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+lerna-debug.log*
+pnpm-debug.log*
+*.log
+
+# Environment files
 .env
+.env.local
+.env.*.local
+
+# Coverage
+coverage/
+coverage-*/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE/editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.vs/
+
+# OneDrive / Windows temp
+OneDriveTemp/
+*.lnk
+
+# Misc
+.node_repl_history
+*.tgz
+*.zip
+*.tar.gz
+
+# Backend/frontend specific (if present)
+frontend/dist/
+frontend/node_modules/
+Backend/node_modules/
+Backend/.env
