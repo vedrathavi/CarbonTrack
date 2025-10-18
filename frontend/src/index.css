@@ -1,14 +1,40 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap");
+
 @import "tailwindcss";
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
 
-  color-scheme: light dark;
+@theme {
+  --color-prim-900: #121e00;
+  --color-prim-800: #426e02;
+  --color-prim-700: #7dd303;
+  --color-prim-600: #9afb0e;
+  --color-prim-500: #affc41;
+  --color-prim-400: #c4fd72;
+  --color-prim-300: #d9fea5;
+  --color-prim-200: #d8f9a9;
+  --color-prim-100: #edf8dd;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --color-sec-900: #060e06;
+  --color-sec-800: #0c1d0d;
+  --color-sec-700: #122b13;
+  --color-sec-600: #317233;
+  --color-sec-500: #4b8b4d;
+  --color-sec-400: #81bb83;
+  --color-sec-300: #a2cda4;
+  --color-sec-200: #c3dfc4;
+  --color-sec-100: #e4f1e5;
+
+  --color-neu-900: #000000;
+  --color-neu-800: #0d0d0d;
+  --color-neu-700: #262626;
+  --color-neu-600: #404040;
+  --color-neu-500: #737373;
+  --color-neu-400: #bfbfbf;
+  --color-neu-300: #d9d9d9;
+  --color-neu-200: #e6e6e6;
+  --color-neu-100: #f2f2f2;
+  --color-neu-0: #ffffff;
+
+  --font-instru: "Instrument Serif", serif;
+  --font-inter: "Inter", sans-serif;
 }
-
