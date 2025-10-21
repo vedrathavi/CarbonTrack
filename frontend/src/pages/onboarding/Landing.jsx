@@ -95,7 +95,7 @@ export default function Landing() {
             <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md"></div>
             <Button
               onClick={redirectLogin}
-              className="relative z-10 inline-flex items-center font-inter gap-3 bg-white text-sec-900 px-6 py-6 rounded-md hover:bg-prim-100 hover:text-sec-800"
+              className="relative z-10 inline-flex items-center font-inter gap-3 bg-prim-100  border-sec-900 border-2 text-sec-900 px-6 py-6 rounded-md hover:bg-prim-100 hover:text-sec-800"
             >
               <div className="flex justify-center items-center gap-2">
                 <FcGoogle className="size-6" />
@@ -120,7 +120,7 @@ export default function Landing() {
             <div className="relative flex items-center gap-4 p-6 rounded-lg bg-gradient-to-b bg-prim-100/15 group hover:border-sec-900 hover:scale-105 ">
               <div className="relative">
                 <div className="w-20 h-20 absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-full"></div>
-                <div className="w-20 h-20 relative flex items-center justify-center bg-neu-0 text-sec-900 font-inter rounded-full text-4xl font-bold mb-4">
+                <div className="w-20 h-20 relative flex items-center justify-center bg-prim-100  border-sec-900 border-2 text-sec-900 font-inter rounded-full text-4xl font-bold mb-4">
                   1
                 </div>
               </div>
@@ -138,7 +138,7 @@ export default function Landing() {
             <div className="relative flex items-center gap-4 p-6 rounded-lg bg-gradient-to-b bg-prim-100/15 group hover:scale-105 transition-transform duration-200">
               <div className="relative">
                 <div className="w-20 h-20 absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-full"></div>
-                <div className="w-20 h-20 relative flex items-center justify-center bg-neu-0 text-sec-900 font-inter rounded-full text-4xl font-bold mb-4">
+                <div className="w-20 h-20 relative flex items-center justify-center bg-prim-100  border-sec-900 border-2 text-sec-900 font-inter rounded-full text-4xl font-bold mb-4">
                   2
                 </div>
               </div>
@@ -157,7 +157,7 @@ export default function Landing() {
             <div className="relative flex items-center gap-4 p-6 rounded-lg bg-gradient-to-b bg-prim-100/15 group hover:scale-105 transition-transform duration-200">
               <div className="relative">
                 <div className="w-20 h-20 absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-full"></div>
-                <div className="w-20 h-20 relative flex items-center justify-center bg-neu-0 text-sec-900 font-inter rounded-full text-4xl font-bold mb-4">
+                <div className="w-20 h-20 relative flex items-center justify-center bg-prim-100  border-sec-900 border-2 text-sec-900 font-inter rounded-full text-4xl font-bold mb-4">
                   3
                 </div>
               </div>

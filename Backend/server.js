@@ -10,7 +10,8 @@ import passport from "passport";
 // register passport strategies (side-effect)
 import "./src/services/passport.js";
 
-import authRouter from "./src/routes/auth.js";
+import authRouter from "./src/routes/authRoutes.js";
+import homeRouter from "./src/routes/homeRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -36,9 +37,11 @@ app.use((req, res, next) => {
 
 // mount auth routes (passport callback URL expects this mount)
 app.use("/api/auth", authRouter);
+// mount home routes
+app.use("/api/home", homeRouter);
 
 // Connect to Mongo and start server after success
-const MONGO_URI =process.env.MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI;
 
 mongoose
   .connect(MONGO_URI)
