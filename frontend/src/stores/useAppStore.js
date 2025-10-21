@@ -7,7 +7,11 @@ export const useAppStore = create(
     (...a) => ({
       ...createAuthSlice(...a),
     }),
-    { name: "app-storage" }
+    {
+      name: "app-storage",
+      // only persist userInfo (do not persist loading/error transient flags)
+      partialize: (state) => ({ userInfo: state.userInfo }),
+    }
   )
 );
 

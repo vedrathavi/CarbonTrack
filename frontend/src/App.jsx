@@ -2,10 +2,10 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import Landing from "./pages/onboarding/Landing";
-import { useFetchUser } from "./hooks/useAuthHook";
+import useAuth from "./hooks/useAuthHook";
 import Home from "./pages/Home";
 const PrivateRoute = ({ children }) => {
-  const { userInfo, loading } = useFetchUser();
+  const { userInfo, loading } = useAuth();
 
   if (loading) {
     return (
@@ -17,7 +17,7 @@ const PrivateRoute = ({ children }) => {
 };
 
 const AuthRoute = ({ children }) => {
-  const { userInfo, loading } = useFetchUser();
+  const { userInfo, loading } = useAuth();
 
   if (loading) {
     return (

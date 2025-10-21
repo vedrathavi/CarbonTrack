@@ -11,6 +11,7 @@ const oauthClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 const cookieOptions = {
   httpOnly: true,
+  path: "/",
   sameSite: "lax", // change to "none" + secure=true for cross-site in prod
   secure: process.env.NODE_ENV === "production",
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
@@ -90,8 +91,9 @@ export const logout = (req, res) => {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
+    path: "/",
   });
-  return res.redirect(`${CLIENT_URL}/logged-out`);
+  return res.status(200).json({ ok: true, message: "Logged out" });
 };
 
 export const me = async (req, res) => {
@@ -102,7 +104,7 @@ export const me = async (req, res) => {
     const user = await User.findById(userId).select("-password -__v");
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    return res.json({ user });
+    return res.status(200).json({ user });
   } catch (err) {
     console.error("GET /me error:", err);
     return res.status(500).json({ message: "Server error" });

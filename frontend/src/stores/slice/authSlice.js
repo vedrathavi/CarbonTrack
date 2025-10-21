@@ -30,11 +30,42 @@ export const createAuthSlice = (set, get) => ({
   // 🔹 Logout
   logout: async () => {
     try {
-      await apiClient.get(LOGOUT_ROUTE);
+      // Try to instruct Google Identity to stop auto-selecting the previous account
+      if (typeof window !== "undefined") {
+        try {
+          if (window.google?.accounts?.id?.disableAutoSelect) {
+            window.google.accounts.id.disableAutoSelect();
+          }
+          // Some integrations expose a revoke function
+          if (window.google?.accounts?.id?.revoke) {
+            window.google.accounts.id.revoke();
+          }
+        } catch (e) {
+          console.debug("google disableAutoSelect/revoke failed:", e);
+        }
+
+        // Legacy gapi.auth2 signOut
+        try {
+          if (window.gapi?.auth2) {
+            const auth2 = window.gapi.auth2.getAuthInstance();
+            if (auth2 && auth2.signOut) await auth2.signOut();
+          }
+        } catch (e) {
+          console.debug("gapi signOut failed:", e);
+        }
+      }
+
+      const res = await apiClient.get(LOGOUT_ROUTE);
+      if (res.status === 200) {
+        console.log("Logout successful");
+        set({ userInfo: null, error: null });
+      } else {
+        console.warn("Logout failed with status:", res.status);
+      }
     } catch (err) {
       console.warn("Logout failed:", err);
+      set({ userInfo: null, error: null });
     }
-    set({ userInfo: null, error: null });
   },
 
   // 🔹 Helpers

@@ -26,6 +26,14 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
 
+app.use((req, res, next) => {
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, private"
+  );
+  next();
+});
+
 // mount auth routes (passport callback URL expects this mount)
 app.use("/api/auth", authRouter);
 

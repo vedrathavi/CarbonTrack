@@ -17,6 +17,8 @@ router.get(
   passport.authenticate("google", {
     scope: ["profile", "email"],
     session: false,
+    // Prompt account chooser to avoid silent re-selection of previous account
+    prompt: "select_account",
   })
 );
 

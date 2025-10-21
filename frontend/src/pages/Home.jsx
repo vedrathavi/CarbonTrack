@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import useAppStore from "../stores/useAppStore";
 
 const Home = () => {
-  const { userInfo, logout } = useAppStore();
+  const { userInfo, logout, clearUser } = useAppStore();
   const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
     setLoading(true);
     try {
       await logout(); // clears userInfo and logs out from backend
-      window.location.href = "/"; // redirect to landing page
+      clearUser(); // ensure userInfo is cleared from the store
     } catch (err) {
       console.error("Logout failed:", err);
     } finally {
