@@ -17,3 +17,6 @@ export const JOIN_HOME_ROUTE = `${HOST}/${HOME_ROUTES}/join`; // POST
 export const GET_MY_HOME_ROUTE = `${HOST}/${HOME_ROUTES}/me`; // GET
 export const UPDATE_HOME_ROUTE = `${HOST}/${HOME_ROUTES}`; // PATCH
 export const HOME_STATS_ROUTE = `${HOST}/${HOME_ROUTES}/stats`; // GET
+
+// Emission factor API route
+export const EMISSION_FACTOR_ROUTE = `${HOST}/${API_PREFIX}/emission-factor`; // GET with query params: city, state, country

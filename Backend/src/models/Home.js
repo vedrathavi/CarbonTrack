@@ -105,6 +105,13 @@ const homeSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    // Emission factor for the home's city/region, fetched from Climate AQ API
+    emissionFactor: {
+      type: Number,
+      required: false, // can be set after home creation
+      default: null,
+      description: "CO2 emission factor (gCO2/kWh) for the home location",
+    },
   },
   {
     timestamps: true,

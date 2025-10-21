@@ -1,4 +1,5 @@
 import Home from "../models/Home.js";
+import { getOrFetchEmissionFactor } from "../services/emissionFactorService.js";
 
 // @desc    Create a new home
 // @route   POST /api/homes
@@ -7,12 +8,23 @@ export const createHome = async (req, res) => {
   try {
     const { name, address, totalRooms, appliances } = req.body;
 
+    // Fetch emission factor for the address
+    let emissionFactor = null;
+    if (address && address.city && address.country) {
+      emissionFactor = await getOrFetchEmissionFactor({
+        city: address.city,
+        state: address.state,
+        country: address.country,
+      });
+    }
+
     // Create new home with current user as creator
     const home = await Home.create({
       name,
       address,
       totalRooms,
       appliances,
+      emissionFactor,
       createdBy: req.user._id,
       members: [{ userId: req.user._id, role: "admin" }],
     });
@@ -48,6 +60,25 @@ export const joinHome = async (req, res) => {
     }
 
     const home = await Home.joinByHomeCode(homeCode, req.user._id);
+
+    // Backfill emissionFactor if missing (for older homes)
+    if (
+      home &&
+      (home.emissionFactor === null || home.emissionFactor === undefined)
+    ) {
+      const addr = home.address || {};
+      if (addr.city && addr.country) {
+        const factor = await getOrFetchEmissionFactor({
+          city: addr.city,
+          state: addr.state,
+          country: addr.country,
+        });
+        if (typeof factor === "number") {
+          home.emissionFactor = factor;
+          await home.save();
+        }
+      }
+    }
 
     res.status(200).json({
       status: "success",

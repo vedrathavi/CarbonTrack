@@ -1,4 +1,6 @@
 import User from "../models/User.js";
+import Home from "../models/Home.js";
+import { getOrFetchEmissionFactor } from "../services/emissionFactorService.js";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 
@@ -58,6 +60,32 @@ export const googleLogin = async (req, res) => {
       user.profilePic = picture || user.profilePic;
       user.authProvider = "google";
       await user.save();
+    }
+
+    // After successful login, if user already belongs to a home and
+    // the home's emissionFactor is missing, fetch & cache it based on address
+    try {
+      const home = await Home.findOne({ "members.userId": user._id });
+      if (
+        home &&
+        (home.emissionFactor === null || home.emissionFactor === undefined)
+      ) {
+        const addr = home.address || {};
+        if (addr.city && addr.country) {
+          const factor = await getOrFetchEmissionFactor({
+            city: addr.city,
+            state: addr.state,
+            country: addr.country,
+          });
+          if (typeof factor === "number") {
+            home.emissionFactor = factor;
+            await home.save();
+          }
+        }
+      }
+    } catch (e) {
+      // non-blocking: log and continue with login
+      console.warn("Emission factor enrichment skipped:", e?.message || e);
     }
 
     const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {

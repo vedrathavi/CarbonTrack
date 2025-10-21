@@ -12,6 +12,7 @@ import "./src/services/passport.js";
 
 import authRouter from "./src/routes/authRoutes.js";
 import homeRouter from "./src/routes/homeRoutes.js";
+import emissionRouter from "./src/routes/emissionRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -39,6 +40,8 @@ app.use((req, res, next) => {
 app.use("/api/auth", authRouter);
 // mount home routes
 app.use("/api/home", homeRouter);
+// mount emission factor routes
+app.use("/api/emission-factor", emissionRouter);
 
 // Connect to Mongo and start server after success
 const MONGO_URI = process.env.MONGO_URI;
