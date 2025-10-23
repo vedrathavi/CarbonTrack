@@ -16,6 +16,7 @@ import rainbowImg from "@/assets/rainbow.svg";
 export default function Landing() {
   const { userInfo, loading } = useAppStore();
   console.log("User Info:", userInfo);
+
   const redirectLogin = () => {
     window.location.href = AUTH_GOOGLE_LOGIN_ROUTE;
   };
@@ -25,11 +26,11 @@ export default function Landing() {
   }
 
   return (
-    <main className="min-h-screen -z-40 bg-prim-500 flex flex-col items-center relative overflow-x-hidden">
+    <main className="min-h-screen bg-prim-500 flex flex-col items-center relative overflow-x-hidden">
       {/* Decorative Elements */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ zIndex: -1 }}
+        style={{ zIndex: 0 }}
       >
         <img
           src={sunImg}
@@ -64,7 +65,7 @@ export default function Landing() {
       </div>
 
       {/* 🏠 Hero */}
-      <header className="w-full text-center py-16  px-6 md:px-10 flex flex-col items-center ">
+      <header className="w-full text-center py-16 px-6 md:px-10 flex flex-col items-center relative z-10">
         <h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -91,25 +92,21 @@ export default function Landing() {
           transition={{ delay: 0.5 }}
           className="mt-10"
         >
-          <div className="relative">
-            <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md"></div>
-            <Button
+          <div className="relative inline-block">
+            <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
+            <button
               onClick={redirectLogin}
-              className="relative z-10 inline-flex items-center font-inter gap-3 bg-prim-100  border-sec-900 border-2 text-sec-900 px-6 py-6 rounded-md hover:bg-prim-100 hover:text-sec-800"
+              className="relative z-10 inline-flex items-center font-inter gap-3 bg-prim-100 border-sec-900 border-2 text-sec-900 px-6 py-3 rounded-md hover:bg-prim-100 hover:text-sec-800 transition-colors cursor-pointer"
             >
-              <div className="flex justify-center items-center gap-2">
-                <FcGoogle className="size-6" />
-                <span className="text-xl font-medium">
-                  Continue with Google
-                </span>
-              </div>
-            </Button>
+              <FcGoogle className="size-6" />
+              <span className="text-xl font-medium">Continue with Google</span>
+            </button>
           </div>
         </div>
       </header>
 
       {/* 🔄 How it Works */}
-      <section className="w-full py-16 pb-40   px-6 md:px-10">
+      <section className="w-full py-16 pb-40 px-6 md:px-10 relative z-10">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-5xl md:text-6xl font-instru text-sec-900 tracking-tight  mb-4">
             How it Works
@@ -154,7 +151,7 @@ export default function Landing() {
             </div>
 
             {/* Step 3 */}
-            <div className="relative flex items-center gap-4 p-6 rounded-lg bg-gradient-to-b bg-prim-100/15 group hover:scale-105 transition-transform duration-200">
+            <div className="relative flex items-center gap-4 p-6 rounded-lg bg-gradient-to-b bg-prim-100/15 group hover:scale-105 hotransition-transform duration-200 ">
               <div className="relative">
                 <div className="w-20 h-20 absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-full"></div>
                 <div className="w-20 h-20 relative flex items-center justify-center bg-prim-100  border-sec-900 border-2 text-sec-900 font-inter rounded-full text-4xl font-bold mb-4">

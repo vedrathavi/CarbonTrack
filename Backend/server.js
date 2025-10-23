@@ -46,8 +46,18 @@ app.use("/api/emission-factor", emissionRouter);
 // Connect to Mongo and start server after success
 const MONGO_URI = process.env.MONGO_URI;
 
+// Provide explicit connection options to improve diagnostics and handle common network issues.
+const mongooseOptions = {
+  // time to try selecting servers (ms)
+  serverSelectionTimeoutMS: 10000,
+  // socket/connect timeout
+  connectTimeoutMS: 10000,
+  // prefer IPv4 to avoid some DNS/IPv6 issues on Windows networks
+  family: 4,
+};
+
 mongoose
-  .connect(MONGO_URI)
+  .connect(MONGO_URI, mongooseOptions)
   .then(() => {
     console.log("MongoDB connected");
     app.get("/", (req, res) => res.send("Server is running!"));
@@ -56,6 +66,14 @@ mongoose
     });
   })
   .catch((err) => {
-    console.error("MongoDB connection error:", err);
+    console.error("MongoDB connection error:", {
+      name: err?.name,
+      message: err?.message,
+      reason: err?.reason || err?.stack,
+    });
+    // Helpful troubleshooting tips for the developer
+    console.error("Tips: check MONGO_URI, internet access, and MongoDB Atlas IP whitelist (or allow 0.0.0.0/0 for testing).\n" +
+      "You can also try increasing serverSelectionTimeoutMS in server.js if your network is slow.");
     process.exit(1);
   });
+

@@ -1,39 +1,76 @@
 import EmissionFactor from "../models/EmissionFactor.js";
 import axios from "axios";
 
-// Replace with your actual Climate AQ API endpoint
-const CLIMATE_AQ_API_URL = process.env.CLIMATE_AQ_API_URL;
+const CLIMATIQ_API_URL = process.env.CLIMATIQ_API_URL; // e.g. https://api.climatiq.io/data/v1/estimate
+const CLIMATIQ_API_KEY = process.env.CLIMATIQ_API_KEY;
 
-// Fetch emission factor for a city/region, cache in DB if not found
+// Fetch emission factor for a country, cache in DB if not found
 export const getEmissionFactor = async (req, res) => {
-  const { city, state, country } = req.query;
-  if (!city || !country) {
-    return res.status(400).json({ message: "City and country are required" });
+  const { country } = req.query;
+  if (!country) {
+    return res.status(400).json({ message: "Country is required" });
   }
 
   // Try local DB first
-  let factorDoc = await EmissionFactor.findOne({ city, state, country });
+  let factorDoc = await EmissionFactor.findOne({ country });
   if (factorDoc) {
-    return res.json({ factor: factorDoc.factor, source: "local" });
+    return res.json({
+      factor: factorDoc.factor,
+      source: "local",
+      unit: "gCO2/kWh",
+    });
   }
 
-  // Fetch from Climate AQ API
+  // Fetch from Climatiq API using /data/v1/estimate endpoint
+  if (!CLIMATIQ_API_URL || !CLIMATIQ_API_KEY) {
+    return res.status(500).json({ message: "Climatiq API not configured" });
+  }
+
   try {
-    const response = await axios.get(CLIMATE_AQ_API_URL, {
-      params: { city, state, country },
-    });
-    const factor = response.data.factor;
-    if (typeof factor !== "number") {
+    const axiosConfig = {
+      headers: {
+        Authorization: `Bearer ${CLIMATIQ_API_KEY}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      timeout: 10000,
+    };
+
+    const body = {
+      emission_factor: {
+        activity_id: "electricity-supply_grid-source_supplier_mix",
+        data_version: "^0",
+        region: country,
+      },
+      parameters: {
+        energy: 1,
+        energy_unit: "kWh",
+      },
+    };
+
+    const response = await axios.post(CLIMATIQ_API_URL, body, axiosConfig);
+    const kgCO2e = response.data?.co2e;
+
+    if (typeof kgCO2e !== "number") {
       return res
         .status(404)
-        .json({ message: "Emission factor not found from API" });
+        .json({ message: "Emission factor not found from Climatiq API" });
     }
-    // Save to DB for future
-    factorDoc = await EmissionFactor.create({ city, state, country, factor });
-    return res.json({ factor, source: "api" });
+
+    // Convert kg to grams
+    const factor = kgCO2e * 1000;
+
+    // Save to DB for future (country-level cache)
+    factorDoc = await EmissionFactor.create({
+      country,
+      factor,
+    });
+
+    return res.json({ factor, source: "climatiq", unit: "gCO2/kWh" });
   } catch (err) {
-    return res
-      .status(500)
-      .json({ message: "Error fetching emission factor", error: err.message });
+    return res.status(500).json({
+      message: "Error fetching emission factor",
+      error: err?.response?.data || err.message,
+    });
   }
 };

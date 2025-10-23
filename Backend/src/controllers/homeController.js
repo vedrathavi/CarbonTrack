@@ -1,4 +1,5 @@
 import Home from "../models/Home.js";
+import User from "../models/User.js";
 import { getOrFetchEmissionFactor } from "../services/emissionFactorService.js";
 
 // @desc    Create a new home
@@ -8,13 +9,21 @@ export const createHome = async (req, res) => {
   try {
     const { name, address, totalRooms, appliances } = req.body;
 
-    // Fetch emission factor for the address
+    // Fetch emission factor for the address (country-only lookup in service)
     let emissionFactor = null;
-    if (address && address.city && address.country) {
+    if (address && address.country) {
       emissionFactor = await getOrFetchEmissionFactor({
-        city: address.city,
-        state: address.state,
         country: address.country,
+      });
+    }
+
+    // If we couldn't determine an emission factor, return a clear 422 so frontend can prompt user
+    if (emissionFactor === null) {
+      return res.status(422).json({
+        status: "error",
+        code: "EMISSION_FACTOR_UNAVAILABLE",
+        message:
+          "Could not determine emission factor for the provided address. Please provide a more specific address or try again later.",
       });
     }
 
@@ -28,6 +37,9 @@ export const createHome = async (req, res) => {
       createdBy: req.user._id,
       members: [{ userId: req.user._id, role: "admin" }],
     });
+
+    // Update user's householdId
+    await User.findByIdAndUpdate(req.user._id, { householdId: home._id });
 
     res.status(201).json({
       status: "success",
@@ -67,18 +79,27 @@ export const joinHome = async (req, res) => {
       (home.emissionFactor === null || home.emissionFactor === undefined)
     ) {
       const addr = home.address || {};
-      if (addr.city && addr.country) {
+      if (addr.country) {
         const factor = await getOrFetchEmissionFactor({
-          city: addr.city,
-          state: addr.state,
           country: addr.country,
         });
         if (typeof factor === "number") {
           home.emissionFactor = factor;
           await home.save();
+        } else {
+          // If we couldn't backfill, return a 422 so the client can handle it explicitly
+          return res.status(422).json({
+            status: "error",
+            code: "EMISSION_FACTOR_UNAVAILABLE",
+            message:
+              "Could not determine emission factor for the home's address. Please provide a more specific address or contact support.",
+          });
         }
       }
     }
+
+    // Update user's householdId
+    await User.findByIdAndUpdate(req.user._id, { householdId: home._id });
 
     res.status(200).json({
       status: "success",

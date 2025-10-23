@@ -71,15 +71,21 @@ export const googleLogin = async (req, res) => {
         (home.emissionFactor === null || home.emissionFactor === undefined)
       ) {
         const addr = home.address || {};
-        if (addr.city && addr.country) {
-          const factor = await getOrFetchEmissionFactor({
-            city: addr.city,
-            state: addr.state,
-            country: addr.country,
-          });
-          if (typeof factor === "number") {
-            home.emissionFactor = factor;
-            await home.save();
+        if (addr.country) {
+          // non-blocking enrichment: don't fail login if emission factor can't be found
+          try {
+            const factor = await getOrFetchEmissionFactor({
+              country: addr.country,
+            });
+            if (typeof factor === "number") {
+              home.emissionFactor = factor;
+              await home.save();
+            }
+          } catch (e) {
+            console.warn(
+              "Emission factor enrichment skipped:",
+              e?.message || e
+            );
           }
         }
       }

@@ -5,15 +5,10 @@ import { HomeError } from "../utils/errors.js";
 // Custom Error class for home-related errors
 const homeSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: [true, "Home name is required"],
-      trim: true,
-    },
     homeCode: {
       type: String,
       unique: true,
-      required: true,
+      required: false, // Will be set by pre-save hook
     },
     address: {
       country: {
