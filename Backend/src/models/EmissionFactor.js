@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const emissionFactorSchema = new mongoose.Schema(
   {
     country: { type: String, required: true },
-    factor: { type: Number, required: true }, // gCO2/kWh
+    factor: { type: Number, required: true }, // gCO2/kWh (stored as float/decimal)
   },
   { timestamps: true }
 );

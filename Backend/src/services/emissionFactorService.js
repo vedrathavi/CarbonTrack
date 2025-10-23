@@ -52,7 +52,13 @@ export async function getOrFetchEmissionFactor({ country }) {
     // Extract co2e (kg) and convert to gCO2/kWh
     const kg = data?.co2e;
     if (typeof kg === "number") {
-      const factor = kg * 1000;
+      const factor = kg * 1000; // Keep as float/decimal
+
+      console.log(
+        `Emission factor for ${country}: ${kg} kg → ${factor} gCO2/kWh (float: ${
+          Number.isInteger(factor) ? "NO" : "YES"
+        })`
+      );
 
       // Save to DB for future lookups
       try {
