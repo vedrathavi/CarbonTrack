@@ -1,27 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import apiClient from "@/lib/apiClient";
 import { JOIN_HOME_ROUTE } from "@/utils/constants";
 import useAppStore from "@/stores/useAppStore";
-
+import family from "@/assets/family.svg";
 export default function JoinHome() {
   const navigate = useNavigate();
   const { fetchUser, logout } = useAppStore();
   const [homeCode, setHomeCode] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [homeDetails, setHomeDetails] = useState(null);
 
   const handleLogout = async () => {
     await logout();
@@ -44,13 +34,11 @@ export default function JoinHome() {
       });
 
       if (response.data.status === "success") {
-        setHomeDetails(response.data.data.home);
-
         // Fetch updated user info to get the householdId
         await fetchUser();
 
-        setShowSuccessModal(true);
         toast.success("Successfully joined home!");
+        navigate("/home");
       }
     } catch (error) {
       const message =
@@ -61,117 +49,85 @@ export default function JoinHome() {
     }
   };
 
-  const handleSuccessClose = () => {
-    setShowSuccessModal(false);
-    navigate("/home");
-  };
-
   return (
-    <div className="min-h-screen bg-[#E8EFD3] flex items-center justify-center p-4 relative">
+    <div className="min-h-screen bg-prim-100 flex items-center justify-center p-4 py-12 relative overflow-hidden">
       {/* Logout Button */}
-      <button
-        onClick={handleLogout}
-        className="absolute top-6 right-6 px-4 py-2 text-sm font-medium text-gray-700 bg-white border-2 border-gray-800 rounded-md hover:bg-gray-50 transition-colors"
-      >
-        Logout
-      </button>
+      <div className="absolute top-6 right-6 z-50">
+        <div className="relative inline-block">
+          <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
+          <button
+            onClick={handleLogout}
+            className="relative z-10 inline-flex items-center font-inter gap-2 bg-orange-700 border-sec-900 border-2 text-sec-900 px-4 py-2 rounded-md hover:bg-orange-800 hover:text-sec-800 transition-colors cursor-pointer"
+          >
+            <span className="text-md text-prim-100 font-inter font-medium">
+              Log Out
+            </span>
+          </button>
+        </div>
+      </div>
 
-      <div className="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
-        <div className="order-2 md:order-1">
-          <div className="max-w-md">
-            <h1 className="text-4xl md:text-5xl font-serif mb-4 text-gray-800">
-              Join Your Family's Household
-            </h1>
-            <p className="text-base text-gray-700 mb-6">
-              Already part of a household? Enter the household ID provided by
-              the owner to join your family's home.
-            </p>
+      {/* Background Illustration - Fixed Position */}
+      <div className="absolute inset-0 hidden md:flex items-center justify-end pr-20 pointer-events-none z-0">
+        <img
+          src={family}
+          alt="Family home illustration"
+          className="w-full max-w-lg opacity-100"
+        />
+      </div>
 
-            <form onSubmit={handleJoinHome} className="space-y-6">
-              <div>
-                <Label htmlFor="homeCode" className="text-base mb-2 block">
-                  Enter your House ID
-                </Label>
+      <div className="w-full max-w-6xl relative z-10">
+        <div className="max-w-xl">
+          <h1 className="text-5xl md:text-6xl font-instru tracking-tight leading-tight mb-4 text-sec-900">
+            Join Your Family's Home
+          </h1>
+          <p className="text-lg font-inter tracking-tight text-sec-700 mb-8">
+            Already part of a home? Enter the HomeId provided by the
+            owner to join your family's home.
+          </p>
+
+          <form onSubmit={handleJoinHome} className="space-y-8">
+            <div>
+              <Label
+                htmlFor="homeCode"
+                className="text-xl mb-4 block font-inter tracking-tight font-medium"
+              >
+                Enter your HomeId
+              </Label>
+              <div className="relative inline-block w-lg">
+                <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
                 <Input
                   id="homeCode"
                   type="text"
                   placeholder="Ex. 1H342BB"
                   value={homeCode}
                   onChange={(e) => setHomeCode(e.target.value)}
-                  className="h-12 text-base border-2 border-gray-800 rounded-md"
+                  className="relative z-10 h-12 text-base font-inter border-2 bg-prim-100 border-gray-800 rounded-md uppercase"
                   disabled={loading}
                 />
               </div>
+            </div>
 
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-48 h-12 bg-[#4A6741] hover:bg-[#3E5636] text-white rounded-md"
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-lg h-12 bg-sec-600 hover:bg-sec-700 font-inter tracking-tight text-white rounded-md text-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Joining..." : "Continue"}
+            </button>
+
+            <p className="text-sm font-inter text-sec-700">
+              Not yet registered?{" "}
+              <button
+                type="button"
+                onClick={() => navigate("/onboarding/create-home")}
+                className="text-sec-600 underline hover:text-sec-700 font-medium"
               >
-                {loading ? "Joining..." : "Continue →"}
-              </Button>
-
-              <p className="text-sm text-gray-600">
-                Not yet registered?{" "}
-                <button
-                  type="button"
-                  onClick={() => navigate("/onboarding/create-home")}
-                  className="text-[#4A6741] underline hover:text-[#3E5636]"
-                >
-                  Create Household
-                </button>
-              </p>
-            </form>
-          </div>
-        </div>
-
-        <div className="order-1 md:order-2 flex justify-center">
-          <img
-            src="/family-home.svg"
-            alt="Family home illustration"
-            className="w-full max-w-md"
-          />
+                Create Household
+              </button>
+            </p>
+          </form>
         </div>
       </div>
-
-      {/* Success Modal */}
-      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-        <DialogContent className="bg-[#E8EFD3] border-2 border-gray-800">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-serif text-gray-800">
-              Successfully Joined!
-            </DialogTitle>
-            <DialogDescription className="text-gray-700 space-y-4 pt-4">
-              <p>You've successfully joined the household.</p>
-              {homeDetails && (
-                <div className="bg-white p-4 rounded-lg border border-gray-300 text-left space-y-2">
-                  <p>
-                    <strong>Home Code:</strong> {homeDetails.homeCode}
-                  </p>
-                  <p>
-                    <strong>Location:</strong> {homeDetails.address?.city},{" "}
-                    {homeDetails.address?.state}, {homeDetails.address?.country}
-                  </p>
-                  <p>
-                    <strong>Total Rooms:</strong> {homeDetails.totalRooms}
-                  </p>
-                  <p>
-                    <strong>Members:</strong> {homeDetails.members?.length}
-                  </p>
-                </div>
-              )}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-end pt-4">
-            <Button
-              onClick={handleSuccessClose}
-              className="bg-[#4A6741] hover:bg-[#3E5636] text-white"
-            >
-              Go to Home
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

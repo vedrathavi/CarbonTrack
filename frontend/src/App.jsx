@@ -26,6 +26,8 @@ const PrivateRoute = ({ children }) => {
   // Check if user has completed onboarding (has a home)
   const hasHome = !!userInfo.householdId;
   const isOnboardingPage = window.location.pathname.startsWith("/onboarding");
+  const isCreateHomeDetailsPage =
+    window.location.pathname === "/onboarding/create-home/details";
 
   // If no home and not on onboarding page, redirect to onboarding
   if (!hasHome && !isOnboardingPage) {
@@ -33,7 +35,8 @@ const PrivateRoute = ({ children }) => {
   }
 
   // If has home and on onboarding page, redirect to home
-  if (hasHome && isOnboardingPage) {
+  // EXCEPT if on create-home/details page (user might be viewing success modal)
+  if (hasHome && isOnboardingPage && !isCreateHomeDetailsPage) {
     return <Navigate to="/home" />;
   }
 
@@ -62,7 +65,7 @@ const AuthRoute = ({ children }) => {
 const App = () => {
   return (
     <>
-      <Toaster position="top-center" richColors />
+      <Toaster position="top-center" theme="light" />
       <Routes>
         <Route
           path="/"

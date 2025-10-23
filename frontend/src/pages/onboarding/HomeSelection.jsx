@@ -14,37 +14,43 @@ export default function HomeSelection() {
   };
 
   return (
-    <div className="min-h-screen bg-[#E8EFD3] flex items-center justify-center p-4 relative">
+    <div className="min-h-screen bg-prim-100 flex items-center justify-center p-4 relative">
       {/* Logout Button */}
-      <button
-        onClick={handleLogout}
-        className="absolute top-6 right-6 px-4 py-2 text-sm font-medium text-gray-700 bg-white border-2 border-gray-800 rounded-md hover:bg-gray-50 transition-colors"
-      >
-        Logout
-      </button>
+      <div className="absolute top-6 right-6">
+        <div className="relative inline-block">
+          <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
+          <button
+            onClick={handleLogout}
+            className="relative z-10 inline-flex items-center font-inter gap-2 bg-orange-700 border-sec-900 border-2 text-sec-900 px-4 py-2 rounded-md hover:bg-orange-800 hover:text-sec-800 transition-colors cursor-pointer"
+          >
+            <span className="text-md text-prim-100 font-inter font-medium">Log Out</span>
+          
+          </button>
+        </div>
+      </div>
 
       <div className="w-full max-w-2xl text-center">
-        <h1 className="text-5xl md:text-6xl font-serif mb-6 text-gray-800">
+        <h1 className="text-5xl md:text-6xl font-instru tracking-tight leading-3 mb-6 text-gray-800">
           Welcome to Your Home
         </h1>
-        <p className="text-lg md:text-xl text-gray-700 mb-16">
+        <p className="text-lg md:text-xl font-inter tracking-tight text-gray-700 mb-16">
           Choose one to get your household ready and start tracking together.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-lg mx-auto">
-          <Button
+        <div className="flex flex-col sm:flex-row gap-4 justify-center font-inter font-medium items-center max-w-lg mx-auto">
+          <button
             onClick={() => navigate("/onboarding/create-home")}
-            className="w-full sm:w-48 h-14 text-lg bg-[#B8D4BE] hover:bg-[#A5C4AB] text-gray-800 rounded-lg"
-            variant="outline"
+            className="w-full sm:w-48 h-14 text-lg bg-sec-200   text-sec-600 rounded-lg"
+            
           >
             New Home
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={() => navigate("/onboarding/join-home")}
-            className="w-full sm:w-48 h-14 text-lg bg-[#4A6741] hover:bg-[#3E5636] text-white rounded-lg"
+            className="w-full sm:w-48 h-14 text-lg bg-sec-600  text-prim-100 rounded-lg"
           >
             Existing Home
-          </Button>
+          </button>
         </div>
       </div>
     </div>

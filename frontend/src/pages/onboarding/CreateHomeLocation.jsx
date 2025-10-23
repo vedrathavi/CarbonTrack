@@ -13,6 +13,9 @@ import {
 import { toast } from "sonner";
 import useAppStore from "@/stores/useAppStore";
 
+import location from "@/assets/location.svg";
+import { IoArrowBackOutline, IoArrowForwardOutline } from "react-icons/io5";
+
 export default function CreateHomeLocation() {
   const navigate = useNavigate();
   const { logout } = useAppStore();
@@ -95,116 +98,158 @@ export default function CreateHomeLocation() {
   };
 
   return (
-    <div className="min-h-screen bg-[#E8EFD3] flex items-center justify-center p-4 relative">
+    <div className="min-h-screen bg-prim-100 flex flex-col relative ">
       {/* Logout Button */}
-      <button
-        onClick={handleLogout}
-        className="absolute top-6 right-6 px-4 py-2 text-sm font-medium text-gray-700 bg-white border-2 border-gray-800 rounded-md hover:bg-gray-50 transition-colors"
-      >
-        Logout
-      </button>
+      <div className="absolute top-6 right-6 z-50 ">
+        <div className="relative inline-block">
+          <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
+          <button
+            onClick={handleLogout}
+            className="relative z-10 inline-flex items-center font-inter gap-2 bg-orange-700 border-sec-900 border-2 text-sec-900 px-4 py-2 rounded-md hover:bg-orange-800 hover:text-sec-800 transition-colors cursor-pointer"
+          >
+            <span className="text-md text-prim-100 font-inter font-medium">
+              Log Out
+            </span>
+          </button>
+        </div>
+      </div>
 
-      <div className="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
-        <div className="order-2 md:order-1">
-          <div className="max-w-md">
-            <h1 className="text-4xl md:text-5xl font-serif mb-4 text-gray-800">
-              Where is your household located?
-            </h1>
-            <p className="text-base text-gray-700 mb-8">
-              We use your region to fetch accurate emission factors.
-            </p>
+      {/* Main Content */}
+      <div className="flex-1 flex items-start justify-start p-8 pt-24 pb-32 mb-10 relative z-10">
+        <div className="w-full max-w-4xl">
+          <h1 className="text-5xl md:text-6xl font-instru tracking-tight leading-tight mb-4 text-sec-900">
+            Where is your home located?
+          </h1>
+          <p className="font-inter tracking-tight text-base text-sec-700 mb-8">
+            We use your region to fetch accurate emission factors.
+          </p>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Horizontal Layout for Location Fields */}
+            <div className="flex md:flex-row flex-col w-full gap-4">
               {/* Country */}
-              <div>
-                <Label htmlFor="country" className="text-base mb-2 block">
+              <div className="flex-1">
+                <Label
+                  htmlFor="country"
+                  className="font-inter text-lg font-medium mb-2  text-sec-900"
+                >
                   Country
                 </Label>
-                <Select
-                  onValueChange={handleCountryChange}
-                  value={
-                    countries.find((c) => c.name === formData.country)?.code
-                  }
-                  disabled={loadingCountries}
-                >
-                  <SelectTrigger className="h-12 border-2 border-gray-800 rounded-md">
-                    <SelectValue
-                      placeholder={
-                        loadingCountries ? "Loading countries..." : "Ex. India"
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-60">
-                    {countries.map((country) => (
-                      <SelectItem key={country.code} value={country.code}>
-                        {country.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="relative inline-block w-full">
+                  <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
+                  <Select
+                    onValueChange={handleCountryChange}
+                    value={
+                      countries.find((c) => c.name === formData.country)?.code
+                    }
+                    disabled={loadingCountries}
+                  >
+                    <SelectTrigger className="relative z-10 w-full !h-12 font-inter border-2 border-sec-900 rounded-md bg-white">
+                      <SelectValue
+                        placeholder={
+                          loadingCountries
+                            ? "Loading countries..."
+                            : "Ex. India"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60">
+                      {countries.map((country) => (
+                        <SelectItem key={country.code} value={country.code}>
+                          {country.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               {/* State/Region */}
-              <div>
-                <Label htmlFor="state" className="text-base mb-2 block">
+              <div className="flex-1">
+                <Label
+                  htmlFor="state"
+                  className="font-inter text-lg font-medium mb-2 block text-sec-900"
+                >
                   State/Region
                 </Label>
-                <Input
-                  id="state"
-                  type="text"
-                  placeholder="Ex. Rajasthan"
-                  value={formData.state}
-                  onChange={(e) =>
-                    setFormData({ ...formData, state: e.target.value })
-                  }
-                  className="h-12 text-base border-2 border-gray-800 rounded-md"
-                />
+                <div className="relative inline-block w-full">
+                  <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
+                  <Input
+                    id="state"
+                    type="text"
+                    placeholder="Ex. Rajasthan"
+                    value={formData.state}
+                    onChange={(e) =>
+                      setFormData({ ...formData, state: e.target.value })
+                    }
+                    className="relative z-10 h-12 text-base font-inter border-2 border-sec-900 rounded-md bg-white"
+                  />
+                </div>
               </div>
 
               {/* City */}
-              <div>
-                <Label htmlFor="city" className="text-base mb-2 block">
+              <div className="flex-1">
+                <Label
+                  htmlFor="city"
+                  className="font-inter text-lg font-medium mb-2 block text-sec-900"
+                >
                   City
                 </Label>
-                <Input
-                  id="city"
-                  type="text"
-                  placeholder="Ex. Jaipur"
-                  value={formData.city}
-                  onChange={(e) =>
-                    setFormData({ ...formData, city: e.target.value })
-                  }
-                  className="h-12 text-base border-2 border-gray-800 rounded-md"
-                />
+                <div className="relative inline-block w-full">
+                  <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
+                  <Input
+                    id="city"
+                    type="text"
+                    placeholder="Ex. Jaipur"
+                    value={formData.city}
+                    onChange={(e) =>
+                      setFormData({ ...formData, city: e.target.value })
+                    }
+                    className="relative z-10 h-12 text-base font-inter border-2 border-sec-900 rounded-md bg-white"
+                  />
+                </div>
               </div>
+            </div>
 
-              <div className="flex gap-4">
-                <Button
-                  type="button"
-                  onClick={() => navigate("/onboarding")}
-                  variant="outline"
-                  className="w-32 h-12 border-2 border-gray-800 bg-[#B8D4BE] hover:bg-[#A5C4AB] text-gray-800 rounded-md"
-                >
-                  ← Back
-                </Button>
-                <Button
-                  type="submit"
-                  className="flex-1 h-12 bg-[#4A6741] hover:bg-[#3E5636] text-white rounded-md"
-                >
-                  Finish
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
+            <div className="flex gap-4 pt-4">
+              <button
+                type="button"
+                onClick={() => navigate("/onboarding")}
+                className="text-lg pr-16 pl-14 h-12 flex justify-center items-center font-inter border-2 border-sec-600 bg-prim-100 text-sec-600 rounded-md cursor-pointer"
+              >
+                <IoArrowBackOutline className="mr-2" />
+                Back
+              </button>
+              <button
+                type="submit"
+                className="text-lg h-12 font-inter flex items-center justify-center pl-16 pr-14 bg-sec-600 text-prim-100 rounded-md cursor-pointer"
+              >
+                Next
+                <IoArrowForwardOutline className="ml-2 size-5 inline-block" />
+              </button>
+            </div>
 
-        <div className="order-1 md:order-2 flex justify-center">
-          <img
-            src="/location-illustration.svg"
-            alt="Location illustration"
-            className="w-full max-w-md"
-          />
+            <p className="text-sm font-inter text-sec-700">
+              Already registered?{" "}
+              <button
+                type="button"
+                onClick={() => navigate("/onboarding/join-home")}
+                className="text-sec-600 underline hover:text-sec-700 font-medium"
+              >
+                Join Home
+              </button>
+            </p>
+          </form>
         </div>
+      </div>
+
+      {/* Image Stuck to Bottom Right */}
+      <div className="absolute bottom-0  right-0 pointer-events-none">
+        <img
+          src={location}
+          alt="Location illustration"
+          className="w-full max-w-3xl  object-contain"
+        />
       </div>
     </div>
   );

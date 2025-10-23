@@ -59,12 +59,25 @@ export const createAuthSlice = (set, get) => ({
       if (res.status === 200) {
         console.log("Logout successful");
         set({ userInfo: null, error: null });
+        // Clear any home-related state as well
+        try {
+          const clearHome = get().clearHome;
+          if (typeof clearHome === "function") clearHome();
+        } catch {
+          void 0; // no-op
+        }
       } else {
         console.warn("Logout failed with status:", res.status);
       }
     } catch (err) {
       console.warn("Logout failed:", err);
       set({ userInfo: null, error: null });
+      try {
+        const clearHome = get().clearHome;
+        if (typeof clearHome === "function") clearHome();
+      } catch {
+        void 0; // no-op
+      }
     }
   },
 

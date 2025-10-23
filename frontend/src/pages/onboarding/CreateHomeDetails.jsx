@@ -4,39 +4,31 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import apiClient from "@/lib/apiClient";
 import { CREATE_HOME_ROUTE } from "@/utils/constants";
 import useAppStore from "@/stores/useAppStore";
+import homeAppliance from "@/assets/home-appliances.svg";
 
 const APPLIANCES_LIST = [
   { id: "airConditioner", label: "Air Conditioner" },
   { id: "refrigerator", label: "Refrigerator" },
   { id: "washingMachine", label: "Washing Machine" },
-  { id: "tv", label: "TV / Computer" },
+  { id: "tv", label: "Television" },
   { id: "computer", label: "Computer" },
   { id: "fan", label: "Fans" },
   { id: "lights", label: "Lights" },
   { id: "electricStove", label: "Electric Stove" },
   { id: "microwave", label: "Microwave" },
-  { id: "vacuumCleaner", label: "Vaccum Cleanrer" },
+  { id: "vacuumCleaner", label: "Vaccum Cleaner" },
 ];
 
 export default function CreateHomeDetails() {
   const navigate = useNavigate();
-  const { fetchUser, logout } = useAppStore();
+  const { fetchUser, logout, userInfo } = useAppStore();
   const [totalRooms, setTotalRooms] = useState("");
   const [selectedAppliances, setSelectedAppliances] = useState({});
   const [loading, setLoading] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [homeDetails, setHomeDetails] = useState(null);
 
   const handleLogout = async () => {
     await logout();
@@ -45,21 +37,29 @@ export default function CreateHomeDetails() {
   };
 
   useEffect(() => {
+    // If user already has a home, redirect to home page
+    if (userInfo?.householdId) {
+      navigate("/home");
+      return;
+    }
+
     // Check if location data exists
     const locationData = localStorage.getItem("homeLocation");
     if (!locationData) {
       toast.error("Please complete location details first");
       navigate("/onboarding/create-home");
     }
-  }, [navigate]);
+  }, [navigate, userInfo]);
 
   const handleApplianceToggle = (applianceId) => {
     setSelectedAppliances((prev) => {
       const newState = { ...prev };
-      if (newState[applianceId]) {
+      if (applianceId in newState) {
+        // Remove the appliance completely when unchecking
         delete newState[applianceId];
       } else {
-        newState[applianceId] = 0;
+        // Add with count 1 when checking
+        newState[applianceId] = 1;
       }
       return newState;
     });
@@ -67,10 +67,19 @@ export default function CreateHomeDetails() {
 
   const handleApplianceCount = (applianceId, value) => {
     const count = parseInt(value) || 0;
-    setSelectedAppliances((prev) => ({
-      ...prev,
-      [applianceId]: count,
-    }));
+    if (count === 0) {
+      // If user sets count to 0, remove the appliance
+      setSelectedAppliances((prev) => {
+        const newState = { ...prev };
+        delete newState[applianceId];
+        return newState;
+      });
+    } else {
+      setSelectedAppliances((prev) => ({
+        ...prev,
+        [applianceId]: count,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -125,14 +134,13 @@ export default function CreateHomeDetails() {
       const response = await apiClient.post(CREATE_HOME_ROUTE, payload);
 
       if (response.data.status === "success") {
-        setHomeDetails(response.data.data.home);
         localStorage.removeItem("homeLocation"); // Clean up
 
-        // Fetch updated user info to get the householdId
+        // Fetch user info to update householdId state
         await fetchUser();
 
-        setShowSuccessModal(true);
         toast.success("Home created successfully!");
+        navigate("/home");
       }
     } catch (error) {
       console.error("Error creating home:", error);
@@ -160,28 +168,39 @@ export default function CreateHomeDetails() {
     }
   };
 
-  const handleSuccessClose = () => {
-    setShowSuccessModal(false);
-    navigate("/home");
-  };
-
   return (
-    <div className="min-h-screen bg-[#E8EFD3] flex items-center justify-center p-4 py-12 relative">
+    <div className="min-h-screen bg-prim-100 flex items-center justify-center p-4 py-12 relative overflow-hidden">
       {/* Logout Button */}
-      <button
-        onClick={handleLogout}
-        className="absolute top-6 right-6 px-4 py-2 text-sm font-medium text-gray-700 bg-white border-2 border-gray-800 rounded-md hover:bg-gray-50 transition-colors z-50"
-      >
-        Logout
-      </button>
+      <div className="absolute top-6 right-6 z-50">
+        <div className="relative inline-block">
+          <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
+          <button
+            onClick={handleLogout}
+            className="relative z-10 inline-flex items-center font-inter gap-2 bg-orange-700 border-sec-900 border-2 text-sec-900 px-4 py-2 rounded-md hover:bg-orange-800 hover:text-sec-800 transition-colors cursor-pointer"
+          >
+            <span className="text-md text-prim-100 font-inter font-medium">
+              Log Out
+            </span>
+          </button>
+        </div>
+      </div>
 
-      <div className="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-start">
-        <div className="order-2 md:order-1">
-          <div className="max-w-md">
-            <h1 className="text-4xl md:text-5xl font-instru tracking-tight mb-4 text-gray-800">
+      {/* Background Illustration - Fixed Position */}
+      <div className="absolute inset-0 hidden md:flex items-center justify-end pr-20 pointer-events-none z-0">
+        <img
+          src={homeAppliance}
+          alt="Home details illustration"
+          className="w-full max-w-lg opacity-100"
+        />
+      </div>
+
+      <div className="w-full max-w-6xl relative z-10">
+        <div className="order-1 md:order-1">
+          <div className="max-w-lg">
+            <h1 className="text-5xl md:text-6xl font-instru tracking-tight leading-tight mb-4 text-sec-900 ">
               Tell us about your home
             </h1>
-            <p className="text-base text-gray-700 mb-8">
+            <p className="text-lg font-inter tracking-tight text-sec-700 mb-8">
               This helps us estimate your overall energy use.
             </p>
 
@@ -190,24 +209,33 @@ export default function CreateHomeDetails() {
               <div>
                 <Label
                   htmlFor="rooms"
-                  className="text-lg mb-3 block font-medium"
+                  className="text-xl mb-4 block font-inter tracking-tight font-medium"
                 >
                   Number of Rooms
                 </Label>
-                <Input
-                  id="rooms"
-                  type="number"
-                  min="1"
-                  placeholder="Ex. 4 rooms"
-                  value={totalRooms}
-                  onChange={(e) => setTotalRooms(e.target.value)}
-                  className="h-12 text-base border-2 border-gray-800 rounded-md"
-                />
+                <div className="relative inline-block w-full">
+                  <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
+                  <Input
+                    id="rooms"
+                    type="number"
+                    min="1"
+                    placeholder="Ex. 4 rooms"
+                    value={totalRooms}
+                    onChange={(e) => setTotalRooms(e.target.value)}
+                    onKeyDown={(e) => {
+                      // Prevent 'e', 'E', '+', '-', '.'
+                      if (["e", "E", "+", "-", "."].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    className="relative z-10 h-12 text-base font-inter border-2 bg-prim-100 border-gray-800 rounded-md"
+                  />
+                </div>
               </div>
 
               {/* Appliances */}
               <div>
-                <Label className="text-lg mb-4 block font-medium">
+                <Label className="text-xl mb-4 block font-inter tracking-tight font-medium">
                   What Appliances do you use?
                 </Label>
                 <div className="space-y-3">
@@ -219,25 +247,28 @@ export default function CreateHomeDetails() {
                         onCheckedChange={() =>
                           handleApplianceToggle(appliance.id)
                         }
-                        className="border-2 border-gray-800"
+                        className="border-full border-prim-900"
                       />
                       <label
                         htmlFor={appliance.id}
-                        className="flex-1 text-base cursor-pointer"
+                        className="flex-1 text-md font-inter cursor-pointer"
                       >
                         {appliance.label}
                       </label>
                       {appliance.id in selectedAppliances && (
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          value={selectedAppliances[appliance.id]}
-                          onChange={(e) =>
-                            handleApplianceCount(appliance.id, e.target.value)
-                          }
-                          className="w-20 h-9 text-center border-2 border-gray-800 rounded-md"
-                        />
+                        <div className="relative inline-block">
+                          <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
+                          <Input
+                            type="number"
+                            min="0"
+                            placeholder="0"
+                            value={selectedAppliances[appliance.id]}
+                            onChange={(e) =>
+                              handleApplianceCount(appliance.id, e.target.value)
+                            }
+                            className="relative z-10 w-18 h-12   font-medium text-center font-inter border-2 bg-prim-100 border-gray-800 rounded-md"
+                          />
+                        </div>
                       )}
                     </div>
                   ))}
@@ -247,65 +278,25 @@ export default function CreateHomeDetails() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full h-12 bg-[#4A6741] hover:bg-[#3E5636] text-white rounded-md text-lg"
+                className="w-full h-12 bg-sec-600 hover:bg-sec-700 font-inter tracking-tight text-white rounded-md text-xl"
               >
-                {loading ? "Creating..." : "Next →"}
+                {loading ? "Creating..." : "Finish"}
               </Button>
+
+              <p className="text-sm font-inter text-sec-700">
+                Already registered?{" "}
+                <button
+                  type="button"
+                  onClick={() => navigate("/onboarding/join-home")}
+                  className="text-sec-600 underline hover:text-sec-700 font-medium"
+                >
+                  Join Home
+                </button>
+              </p>
             </form>
           </div>
         </div>
-
-        <div className="order-1 md:order-2 flex justify-center items-start sticky top-8">
-          <img
-            src="/home-details.svg"
-            alt="Home details illustration"
-            className="w-full max-w-md"
-          />
-        </div>
       </div>
-
-      {/* Success Modal */}
-      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-        <DialogContent className="bg-[#E8EFD3] border-2 border-gray-800 max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-3xl font-serif text-gray-800 text-center mb-2">
-              Profile Created Successfully!
-            </DialogTitle>
-            <DialogDescription className="text-gray-700 space-y-4 pt-4">
-              {homeDetails && (
-                <div className="space-y-4">
-                  <div className="bg-white p-4 rounded-lg border-2 border-gray-800 text-center">
-                    <p className="text-2xl font-bold text-[#4A6741] mb-1">
-                      {homeDetails.homeCode}
-                    </p>
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(homeDetails.homeCode);
-                        toast.success("Home code copied to clipboard!");
-                      }}
-                      className="text-sm text-gray-600 hover:text-gray-800 flex items-center justify-center gap-1 mx-auto"
-                    >
-                      <span>📋</span> Copy Code
-                    </button>
-                  </div>
-                  <p className="text-center text-base">
-                    Your details are saved, and your journey towards a greener
-                    lifestyle begins now.
-                  </p>
-                </div>
-              )}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-center pt-4">
-            <Button
-              onClick={handleSuccessClose}
-              className="w-full bg-[#4A6741] hover:bg-[#3E5636] text-white"
-            >
-              Go to Home
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
