@@ -17,14 +17,12 @@ export default function HomeSelection() {
     <div className="min-h-screen bg-prim-100 flex items-center justify-center p-4 relative">
       {/* Logout Button */}
       <div className="absolute top-6 right-6">
-        <div className="relative inline-block">
-          <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
-          <button
-            onClick={handleLogout}
-            className="relative z-10 inline-flex items-center font-inter gap-2 bg-orange-700 border-sec-900 border-2 text-sec-900 px-4 py-2 rounded-md hover:bg-orange-800 hover:text-sec-800 transition-colors cursor-pointer"
-          >
-            <span className="text-md text-prim-100 font-inter font-medium">Log Out</span>
-          
+        <div className="btn-3d-wrapper">
+          <div className="btn-3d-offset" aria-hidden />
+          <button onClick={handleLogout} className="btn-3d btn-3d--primary">
+            <span className="text-md text-prim-100 font-inter font-medium">
+              Log Out
+            </span>
           </button>
         </div>
       </div>
@@ -41,7 +39,6 @@ export default function HomeSelection() {
           <button
             onClick={() => navigate("/onboarding/create-home")}
             className="w-full sm:w-48 h-14 text-lg bg-sec-200   text-sec-600 rounded-lg"
-            
           >
             New Home
           </button>

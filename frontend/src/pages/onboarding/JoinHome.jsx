@@ -38,7 +38,7 @@ export default function JoinHome() {
         await fetchUser();
 
         toast.success("Successfully joined home!");
-        navigate("/home");
+        navigate("/dashboard");
       }
     } catch (error) {
       const message =
@@ -53,12 +53,9 @@ export default function JoinHome() {
     <div className="min-h-screen bg-prim-100 flex items-center justify-center p-4 py-12 relative overflow-hidden">
       {/* Logout Button */}
       <div className="absolute top-6 right-6 z-50">
-        <div className="relative inline-block">
-          <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
-          <button
-            onClick={handleLogout}
-            className="relative z-10 inline-flex items-center font-inter gap-2 bg-orange-700 border-sec-900 border-2 text-sec-900 px-4 py-2 rounded-md hover:bg-orange-800 hover:text-sec-800 transition-colors cursor-pointer"
-          >
+        <div className="btn-3d-wrapper">
+          <div className="btn-3d-offset" aria-hidden />
+          <button onClick={handleLogout} className="btn-3d btn-3d--primary">
             <span className="text-md text-prim-100 font-inter font-medium">
               Log Out
             </span>
@@ -81,8 +78,8 @@ export default function JoinHome() {
             Join Your Family's Home
           </h1>
           <p className="text-lg font-inter tracking-tight text-sec-700 mb-8">
-            Already part of a home? Enter the HomeId provided by the
-            owner to join your family's home.
+            Already part of a home? Enter the HomeId provided by the owner to
+            join your family's home.
           </p>
 
           <form onSubmit={handleJoinHome} className="space-y-8">

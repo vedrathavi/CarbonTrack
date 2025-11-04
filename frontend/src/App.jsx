@@ -4,11 +4,16 @@ import { Toaster } from "@/components/ui/sonner";
 
 import Landing from "./pages/onboarding/Landing";
 import useAuth from "./hooks/useAuthHook";
-import Home from "./pages/Home";
 import HomeSelection from "./pages/onboarding/HomeSelection";
 import JoinHome from "./pages/onboarding/JoinHome";
 import CreateHomeLocation from "./pages/onboarding/CreateHomeLocation";
 import CreateHomeDetails from "./pages/onboarding/CreateHomeDetails";
+import DashboardLayout from "@/components/Dashboard/Layout";
+import DashboardSection from "./pages/dashboard/sections/DashboardSection";
+import EducationSection from "./pages/dashboard/sections/EducationSection";
+import Option3Section from "./pages/dashboard/sections/Option3Section";
+import Option4Section from "./pages/dashboard/sections/Option4Section";
+import Profile from "./pages/dashboard/Profile";
 const PrivateRoute = ({ children }) => {
   const { userInfo, loading } = useAuth();
 
@@ -34,10 +39,10 @@ const PrivateRoute = ({ children }) => {
     return <Navigate to="/onboarding" />;
   }
 
-  // If has home and on onboarding page, redirect to home
+  // If has home and on onboarding page, redirect to dashboard
   // EXCEPT if on create-home/details page (user might be viewing success modal)
   if (hasHome && isOnboardingPage && !isCreateHomeDetailsPage) {
-    return <Navigate to="/home" />;
+    return <Navigate to="/dashboard" />;
   }
 
   return children;
@@ -60,7 +65,7 @@ const AuthRoute = ({ children }) => {
 
   // If authenticated, check if user has a home
   const hasHome = !!userInfo.householdId;
-  return hasHome ? <Navigate to="/home" /> : <Navigate to="/onboarding" />;
+  return hasHome ? <Navigate to="/dashboard" /> : <Navigate to="/onboarding" />;
 };
 const App = () => {
   return (
@@ -107,14 +112,20 @@ const App = () => {
             </PrivateRoute>
           }
         />
+        {/* Dashboard routes (top-level paths rendered inside DashboardLayout) */}
         <Route
-          path="/home"
           element={
             <PrivateRoute>
-              <Home />
+              <DashboardLayout />
             </PrivateRoute>
           }
-        />
+        >
+          <Route path="dashboard" element={<DashboardSection />} />
+          <Route path="education" element={<EducationSection />} />
+          <Route path="option3" element={<Option3Section />} />
+          <Route path="option4" element={<Option4Section />} />
+          <Route path="profile" element={<Profile />} />
+        </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>

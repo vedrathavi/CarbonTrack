@@ -10,6 +10,7 @@
   padding: 0;
   box-sizing: border-box;
   overflow-x: hidden;
+  font-family: "Inter", sans-serif;
 }
 @custom-variant dark (&:is(.dark *));
 
@@ -22,7 +23,7 @@
   --color-prim-400: #c4fd72;
   --color-prim-300: #d9fea5;
   --color-prim-200: #d8f9a9;
-  --color-prim-100: #edf8dd;
+  --color-prim-100: #f6faf0;
 
   --color-sec-900: #060e06;
   --color-sec-800: #0c1d0d;
@@ -210,5 +211,76 @@
   .animate-bounce-slow {
     animation: bounce-slow 3s infinite;
   }
+
+  /* hide scrollbars but keep scroll functionality (cross-browser) */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
+
+  /* 3D offset button: wrapper, offset background, and button base
+     Usage:
+     <div class="btn-3d-wrapper">
+       <div class="btn-3d-offset" aria-hidden></div>
+       <button class="btn-3d">...</button>
+     </div>
+  */
+  .btn-3d-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .btn-3d-offset {
+    position: absolute;
+    inset: 0;
+    transform: translateX(0.25rem) translateY(0.25rem);
+    background: var(--color-sec-900);
+    border-radius: 0.375rem; /* rounded-md */
+    pointer-events: none;
+  }
+
+  .btn-3d {
+    @apply relative z-10 inline-flex items-center gap-2 px-4 py-2 rounded-md border-2 transition-colors cursor-pointer;
+  }
+
+  /* primary variant (orange) */
+  .btn-3d--primary {
+    @apply bg-orange-700 border-sec-900 text-sec-900 hover:bg-orange-800 hover:text-sec-800;
+  }
+
+  /* light variant (for cancel) */
+  .btn-3d--light {
+    @apply bg-white border-sec-900 text-sec-900 hover:bg-gray-50;
+  }
+
+  /* slide in from left for mobile drawer */
+  .slide-in-left {
+    animation: slideInLeft 260ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  }
+
+  /* slide out to left when closing the mobile drawer */
+  .slide-out-left {
+    animation: slideOutLeft 220ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  }
 }
 
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
