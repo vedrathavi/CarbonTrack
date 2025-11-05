@@ -39,10 +39,51 @@ const Icon = ({ name, className = "w-5 h-5" }) => {
 };
 
 const sections = [
-  { key: "dashboard", label: "Dashboard", icon: "dashboard" },
-  { key: "education", label: "Education", icon: "education" },
-  { key: "option3", label: "Option 3", icon: "option" },
-  { key: "option4", label: "Option 4", icon: "option" },
+  {
+    key: "dashboard",
+    label: "Dashboard",
+    icon: "dashboard",
+    subs: [
+      { id: "sub-1", label: "Overview" },
+      { id: "sub-2", label: "Analytics" },
+      { id: "sub-3", label: "Insights" },
+    ],
+  },
+  {
+    key: "education",
+    label: "Education",
+    icon: "education",
+    subs: [
+      { id: "sub-hero", label: "Carbon Footprint" },
+      { id: "sub-what", label: "What is Carbon Footprint" },
+      { id: "sub-why", label: "Why It Matters" },
+      { id: "sub-sources", label: "Emission Sources" },
+      { id: "sub-how", label: "How CarbonTrack Helps" },
+      { id: "sub-reduce", label: "Reduction Strategies" },
+      { id: "sub-global", label: "Global Impact" },
+      { id: "sub-cta", label: "Get Started" },
+    ],
+  },
+  {
+    key: "option3",
+    label: "Option 3",
+    icon: "option",
+    subs: [
+      { id: "sub-1", label: "Sub-option 1" },
+      { id: "sub-2", label: "Sub-option 2" },
+      { id: "sub-3", label: "Sub-option 3" },
+    ],
+  },
+  {
+    key: "option4",
+    label: "Option 4",
+    icon: "option",
+    subs: [
+      { id: "sub-1", label: "Sub-option 1" },
+      { id: "sub-2", label: "Sub-option 2" },
+      { id: "sub-3", label: "Sub-option 3" },
+    ],
+  },
 ];
 
 export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
@@ -65,14 +106,25 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
     }
   };
 
+  // Keep submenu in sync with current route
+  useEffect(() => {
+    const top = location.pathname.split("/")[1] || "dashboard";
+    // normalize dashboard path
+    const current = top === "" ? "dashboard" : top;
+    if (current !== openMenu) setOpenMenu(current);
+  }, [location.pathname, openMenu]);
+
+  // Highlight active sub-option based on scroll events from sections
   useEffect(() => {
     const handler = (e) => {
       const { section, sub } = e.detail || {};
-      if (section && section === openMenu) setActiveSub(sub);
+      if (!section || !sub) return;
+      setOpenMenu(section); // ensure submenu is open/visible
+      setActiveSub(sub);
     };
     window.addEventListener("active-sub", handler);
     return () => window.removeEventListener("active-sub", handler);
-  }, [openMenu]);
+  }, []);
 
   // removed toggleMenu in favor of direct navigation on section click
 
@@ -198,31 +250,34 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
               <div
                 className={`mt-1 pr-2 transition-all duration-200 ${
                   openMenu === sec.key
-                    ? "max-h-40 opacity-100"
+                    ? "max-h-96 opacity-100"
                     : "max-h-0 opacity-0 overflow-hidden"
                 } ${collapsed ? "pl-2" : "pl-10"}`}
               >
-                {[1, 2, 3].map((i) => {
-                  const subId = `sub-${i}`;
+                {sec.subs?.map((sub) => {
                   return (
                     <button
-                      key={i}
-                      onClick={() => handleSubClick(sec.key, subId)}
+                      key={sub.id}
+                      onClick={() => handleSubClick(sec.key, sub.id)}
                       className={`block w-full ${
                         collapsed
                           ? "flex items-center justify-center px-0 py-1"
                           : "text-left px-2 py-2"
                       } rounded-md text-sm ${
-                        activeSub === subId && openMenu === sec.key
+                        activeSub === sub.id && openMenu === sec.key
                           ? "bg-green-100 text-green-800"
                           : "text-gray-600 hover:bg-gray-50"
                       }`}
                     >
                       {!collapsed ? (
-                        `Sub-option ${i}`
+                        sub.label
                       ) : (
                         <span
-                          className="w-2 h-2 block rounded-full bg-green-300"
+                          className={`w-2 h-2 block rounded-full ${
+                            activeSub === sub.id && openMenu === sec.key
+                              ? "bg-green-700"
+                              : "bg-green-300"
+                          }`}
                           aria-hidden
                         />
                       )}
