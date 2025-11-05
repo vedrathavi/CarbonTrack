@@ -109,7 +109,7 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
 
   return (
     <aside
-      className={`flex flex-col bg-white/60 ansition-all duration-300 ease-in-out ${
+      className={`flex flex-col bg-neu-0  transition-all duration-300 ease-in-out ${
         collapsed ? "w-20" : "w-64"
       } h-screen overflow-hidden`}
     >

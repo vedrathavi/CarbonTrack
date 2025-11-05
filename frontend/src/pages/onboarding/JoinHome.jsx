@@ -7,6 +7,7 @@ import apiClient from "@/lib/apiClient";
 import { JOIN_HOME_ROUTE } from "@/utils/constants";
 import useAppStore from "@/stores/useAppStore";
 import family from "@/assets/family.svg";
+import { IoArrowBackOutline } from "react-icons/io5";
 export default function JoinHome() {
   const navigate = useNavigate();
   const { fetchUser, logout } = useAppStore();
@@ -104,13 +105,24 @@ export default function JoinHome() {
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-lg h-12 bg-sec-600 hover:bg-sec-700 font-inter tracking-tight text-white rounded-md text-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Joining..." : "Continue"}
-            </button>
+            <div className="flex gap-4 w-lg">
+              <button
+                type="button"
+                onClick={() => navigate("/onboarding")}
+                className="text-lg pr-8 pl-8 h-12 flex justify-center items-center font-inter border-2 border-sec-600 bg-prim-100 text-sec-600 rounded-md cursor-pointer"
+              >
+                <IoArrowBackOutline className="mr-2" />
+                Back
+              </button>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 h-12 bg-sec-600 hover:bg-sec-700 font-inter tracking-tight text-white rounded-md text-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? "Joining..." : "Continue"}
+              </button>
+            </div>
 
             <p className="text-sm font-inter text-sec-700">
               Not yet registered?{" "}

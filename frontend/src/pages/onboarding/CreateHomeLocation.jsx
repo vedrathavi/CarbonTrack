@@ -16,6 +16,9 @@ import useAppStore from "@/stores/useAppStore";
 import location from "@/assets/location.svg";
 import { IoArrowBackOutline, IoArrowForwardOutline } from "react-icons/io5";
 
+// Simple in-memory cache for states per country to avoid repeat network calls
+const statesCache = {};
+
 export default function CreateHomeLocation() {
   const navigate = useNavigate();
   const { logout } = useAppStore();
@@ -27,6 +30,8 @@ export default function CreateHomeLocation() {
   });
   const [countries, setCountries] = useState([]);
   const [loadingCountries, setLoadingCountries] = useState(true);
+  const [states, setStates] = useState([]);
+  const [loadingStates, setLoadingStates] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -82,6 +87,70 @@ export default function CreateHomeLocation() {
       state: "",
       city: "",
     });
+    // fetch states for the selected country (cascade)
+    if (country?.name) {
+      // use cache when available
+      if (statesCache[country.name]) {
+        setStates(statesCache[country.name]);
+      } else {
+        fetchStates(country.name);
+      }
+    } else {
+      setStates([]);
+    }
+  };
+
+  const showSelectCountryHint = () => {
+    if (!formData.country) {
+      toast("Select a country first to enable this field");
+      return;
+    }
+
+    if (loadingStates) {
+      toast("States are loading, please wait...");
+    }
+  };
+
+  const fetchStates = async (countryName) => {
+    try {
+      setLoadingStates(true);
+      setStates([]);
+
+      // Using countriesnow.space API to fetch states for a given country name
+      const resp = await fetch(
+        "https://countriesnow.space/api/v0.1/countries/states",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ country: countryName }),
+        }
+      );
+
+      if (!resp.ok) throw new Error(`Failed to fetch states: ${resp.status}`);
+
+      const json = await resp.json();
+
+      // Different APIs sometimes nest the states differently; be defensive
+      const rawStates = json?.data?.states ?? json?.states ?? json?.data ?? [];
+
+      const stateList = Array.isArray(rawStates)
+        ? rawStates
+            .map((s) => (s?.name ? s.name : s))
+            .filter(Boolean)
+            .sort((a, b) => a.localeCompare(b))
+        : [];
+
+      setStates(stateList);
+      // cache the result for this country
+      // cache the result for this country
+      statesCache[countryName] = stateList;
+    } catch (err) {
+      console.error("Error fetching states:", err);
+      toast.error("Failed to load states for selected country");
+      setStates([]);
+    } finally {
+      setLoadingStates(false);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -170,17 +239,66 @@ export default function CreateHomeLocation() {
                   State/Region
                 </Label>
                 <div className="relative inline-block w-full">
-                  <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
-                  <Input
-                    id="state"
-                    type="text"
-                    placeholder="Ex. Rajasthan"
-                    value={formData.state}
-                    onChange={(e) =>
-                      setFormData({ ...formData, state: e.target.value })
-                    }
-                    className="relative z-10 h-12 text-base font-inter border-2 border-sec-900 rounded-md bg-white"
-                  />
+                  <div
+                    className={`absolute inset-0 translate-x-1 translate-y-1 rounded-md pointer-events-none ${
+                      loadingStates || !formData.country
+                        ? "bg-sec-900"
+                        : "bg-sec-900"
+                    }`}
+                  ></div>
+
+                  {/* overlay to capture clicks when country not selected - shows micro engagement */}
+                  {!formData.country && (
+                    <div className="absolute inset-0 z-20 flex">
+                      <button
+                        type="button"
+                        onClick={showSelectCountryHint}
+                        className="w-full h-full bg-transparent"
+                        aria-hidden
+                      />
+                    </div>
+                  )}
+
+                  {loadingStates ? (
+                    <Select  value={formData.state}>
+                      <SelectTrigger className={`relative z-10 w-full !h-12 font-inter border-2 border-sec-900 rounded-md bg-white `}>
+                        <SelectValue placeholder="Loading states..." />
+                      </SelectTrigger>
+                    </Select>
+                  ) : states && states.length > 0 ? (
+                    <Select
+                      disabled={!formData.country}
+                      onValueChange={(val) =>
+                        setFormData({ ...formData, state: val })
+                      }
+                      value={formData.state}
+                    >
+                      <SelectTrigger className={`relative z-10 w-full !h-12 font-inter border-2 border-sec-900 rounded-md bg-white `}>
+                        <SelectValue placeholder="Select a state" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-60">
+                        {states.map((s) => (
+                          <SelectItem key={s} value={s}>
+                            {s}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      id="state"
+                      type="text"
+                      placeholder="Ex. Rajasthan"
+                      value={formData.state}
+                      disabled={!formData.country}
+                      onChange={(e) =>
+                        setFormData({ ...formData, state: e.target.value })
+                      }
+                      className={`relative z-10 h-12 text-base font-inter border-2 border-sec-900 rounded-md bg-white ${
+                        loadingStates ? "opacity-100" : !formData.country ? "opacity-100 cursor-not-allowed" : ""
+                      }`}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -193,16 +311,33 @@ export default function CreateHomeLocation() {
                   City
                 </Label>
                 <div className="relative inline-block w-full">
-                  <div className="absolute inset-0 translate-x-1 translate-y-1 bg-sec-900 rounded-md pointer-events-none"></div>
+                  <div
+                    className={`absolute inset-0 translate-x-1 translate-y-1 rounded-md pointer-events-none ${
+                      !formData.country ? "bg-sec-900" : "bg-sec-900"
+                    }`}
+                  ></div>
+                  {!formData.country && (
+                    <div className="absolute inset-0 z-20 flex">
+                      <button
+                        type="button"
+                        onClick={showSelectCountryHint}
+                        className="w-full h-full bg-transparent"
+                        aria-hidden
+                      />
+                    </div>
+                  )}
                   <Input
                     id="city"
                     type="text"
                     placeholder="Ex. Jaipur"
                     value={formData.city}
+                    disabled={!formData.country}
                     onChange={(e) =>
                       setFormData({ ...formData, city: e.target.value })
                     }
-                    className="relative z-10 h-12 text-base font-inter border-2 border-sec-900 rounded-md bg-white"
+                    className={`relative z-10 h-12 text-base font-inter border-2 border-sec-900 rounded-md bg-white ${
+                      loadingStates ? "opacity-100" : !formData.country ? "opacity-100 cursor-not-allowed" : ""
+                    }`}
                   />
                 </div>
               </div>

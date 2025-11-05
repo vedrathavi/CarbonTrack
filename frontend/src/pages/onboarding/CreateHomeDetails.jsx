@@ -9,6 +9,7 @@ import apiClient from "@/lib/apiClient";
 import { CREATE_HOME_ROUTE } from "@/utils/constants";
 import useAppStore from "@/stores/useAppStore";
 import homeAppliance from "@/assets/home-appliances.svg";
+import { IoArrowBackOutline } from "react-icons/io5";
 
 const APPLIANCES_LIST = [
   { id: "airConditioner", label: "Air Conditioner" },
@@ -272,13 +273,25 @@ export default function CreateHomeDetails() {
                 </div>
               </div>
 
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full h-12 bg-sec-600 hover:bg-sec-700 font-inter tracking-tight text-white rounded-md text-xl"
-              >
-                {loading ? "Creating..." : "Finish"}
-              </Button>
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => navigate('/onboarding/create-home/location')}
+                  className="text-lg pr-8 pl-8 h-12 flex justify-center items-center font-inter border-2 border-sec-600 bg-prim-100 text-sec-600 rounded-md cursor-pointer"
+                >
+                  <IoArrowBackOutline className="mr-2" />
+                  Back
+                </button>
+
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 h-12 bg-sec-600 hover:bg-sec-700 font-inter tracking-tight text-white rounded-md text-xl"
+                >
+                  
+                  {loading ? "Creating..." : "Finish"}
+                </Button>
+              </div>
 
               <p className="text-sm font-inter text-sec-700">
                 Already registered?{" "}
