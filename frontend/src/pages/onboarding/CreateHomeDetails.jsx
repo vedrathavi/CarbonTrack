@@ -103,18 +103,12 @@ export default function CreateHomeDetails() {
     const locationData = JSON.parse(localStorage.getItem("homeLocation"));
 
     // Prepare appliances object with all appliances (0 for unselected)
-    const appliances = {
-      airConditioner: selectedAppliances.airConditioner || 0,
-      refrigerator: selectedAppliances.refrigerator || 0,
-      washingMachine: selectedAppliances.washingMachine || 0,
-      tv: selectedAppliances.tv || 0,
-      computer: selectedAppliances.computer || 0,
-      fan: selectedAppliances.fan || 0,
-      lights: selectedAppliances.lights || 0,
-      vacuumCleaner: selectedAppliances.vacuumCleaner || 0,
-      electricStove: 0,
-      microwave: 0,
-    };
+    // Use APPLIANCES_LIST so every known appliance key is included and
+    // defaults to 0 when the user hasn't selected it.
+    const appliances = APPLIANCES_LIST.reduce((acc, app) => {
+      acc[app.id] = selectedAppliances[app.id] || 0;
+      return acc;
+    }, {});
 
     const payload = {
       address: {
@@ -276,7 +270,7 @@ export default function CreateHomeDetails() {
               <div className="flex gap-4">
                 <button
                   type="button"
-                  onClick={() => navigate('/onboarding/create-home/location')}
+                  onClick={() => navigate("/onboarding/create-home/location")}
                   className="text-lg pr-8 pl-8 h-12 flex justify-center items-center font-inter border-2 border-sec-600 bg-prim-100 text-sec-600 rounded-md cursor-pointer"
                 >
                   <IoArrowBackOutline className="mr-2" />
@@ -288,7 +282,6 @@ export default function CreateHomeDetails() {
                   disabled={loading}
                   className="flex-1 h-12 bg-sec-600 hover:bg-sec-700 font-inter tracking-tight text-white rounded-md text-xl"
                 >
-                  
                   {loading ? "Creating..." : "Finish"}
                 </Button>
               </div>
