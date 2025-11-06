@@ -9,6 +9,7 @@ import {
   FiSettings,
   FiUser,
   FiChevronDown,
+  FiChevronRight,
   FiLogOut,
 } from "react-icons/fi";
 import {
@@ -184,14 +185,23 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
               }
             }}
             aria-label="Go to dashboard"
-            className="flex items-center gap-3 focus:outline-none"
+            className="flex items-center gap-3 focus:outline-none group"
           >
-            <div className="w-8 h-8 rounded-sm overflow-hidden flex items-center justify-center">
+            <div className="w-8 h-8 rounded-sm overflow-hidden flex items-center justify-center relative">
+              {/* logo visible by default; when collapsed and hovered, show chevron instead */}
               <img
                 src={logoImg}
                 alt="CarbonTrack logo"
-                className="w-full h-full object-contain"
+                className={`w-full h-full object-contain transition-opacity ${
+                  collapsed ? "group-hover:opacity-0" : "opacity-100"
+                }`}
               />
+
+              {collapsed && (
+                <div className="absolute inset-0 flex items-center justify-center bg-green-100 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                  <FiChevronRight className="size-6  text-sec-600" />
+                </div>
+              )}
             </div>
             {!collapsed && (
               <span className="font-instru text-3xl text-sec-600">
@@ -217,16 +227,16 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
         )}
       </div>
 
-      <nav className="flex-1 px-2 py-4 overflow-auto">
+      <nav className="flex-1 px-2 py-4 overflow-auto no-scrollbar">
         {sections.map((sec) => {
           const active =
             (sec.key === "dashboard" && location.pathname === "/dashboard") ||
             (!["dashboard"].includes(sec.key) &&
               location.pathname.startsWith(`/${sec.key}`));
           return (
-            <div key={sec.key} className="mb-2">
+            <div key={sec.key} className=" mb-1">
               <div
-                className={`flex items-center gap-3 cursor-pointer px-3 py-2 rounded-md transition-colors ${
+                className={`flex items-center gap-3 cursor-pointer px-3 py-1 rounded-md transition-colors ${
                   active
                     ? "bg-green-50 text-green-700"
                     : "text-gray-700 hover:bg-gray-50"
@@ -241,7 +251,7 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
                   <Icon name={sec.icon} />
                 </div>
                 {!collapsed && (
-                  <div className="flex-1 font-medium">{sec.label}</div>
+                  <div className="flex-1 font-medium text-sm">{sec.label}</div>
                 )}
                 {/* no collapse chevron here - clicking the row navigates */}
               </div>
@@ -290,7 +300,7 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
         })}
       </nav>
 
-      <div className="px-3 py-3 border-t border-gray-100">
+      <div className="px-3 py-1 border-t border-gray-100">
         <div
           className={`flex items-center gap-3 cursor-pointer px-2 py-2 rounded-md transition-colors ${
             isProfileActive
@@ -334,7 +344,7 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
         </div>
       </div>
       {/* Single logout button below profile */}
-      <div className="px-3 pb-6">
+      <div className="px-3 pb-3">
         <Dialog>
           <DialogTrigger asChild>
             {collapsed ? (

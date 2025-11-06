@@ -167,7 +167,20 @@ export default function EducationSection() {
   const containerRef = useRef();
   const navigate = useNavigate();
   const [animateSectorBars, setAnimateSectorBars] = useState(false);
+  const [animatePerCapitaBars, setAnimatePerCapitaBars] = useState(false);
+  const [animateBreakdown, setAnimateBreakdown] = useState(false);
 
+  // helpers for per-capita visuals
+  const parseEmissions = (val) => {
+    if (!val && val !== 0) return 0;
+    const n = parseFloat(String(val).replace(/[^0-9.]/g, ""));
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const maxEmission = Math.max(
+    ...GLOBAL_DATA.perCapitaEmissions.map((c) => parseEmissions(c.emissions)),
+    0
+  );
   useEffect(() => {
     const onScrollTo = (e) => {
       const { sub } = e.detail || {};
@@ -200,6 +213,12 @@ export default function EducationSection() {
               if (id === "sub-sources") {
                 setAnimateSectorBars(true);
               }
+              if (id === "sub-hero") {
+                setAnimateBreakdown(true);
+              }
+              if (id === "sub-global") {
+                setAnimatePerCapitaBars(true);
+              }
             }
           }
         });
@@ -223,20 +242,20 @@ export default function EducationSection() {
     <div
       id="education"
       ref={containerRef}
-      className="w-full flex gap-8 max-w-7xl mx-auto px-4"
+      className="w-full flex gap-6 max-w-6xl mx-auto   "
     >
       {/* Enhanced Content */}
-      <div className="flex-1 space-y-16">
+      <div className="flex-1 space-y-12">
         {/* Hero Section */}
-        <section id="sub-hero" className="relative py-16">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <section id="sub-hero" className="relative py-10 sm:py-12 lg:py-16">
+          <div className="grid lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h1 className="text-5xl lg:text-6xl font-instru font-normal text-sec-900 mb-6 leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-instru font-normal text-sec-900 mb-6 leading-tight">
                 Understanding Your
-                <span className="block text-prim-700">Carbon Footprint</span>
+                <span className="block text-sec-600">Carbon Footprint</span>
               </h1>
 
-              <p className="text-xl text-sec-700 mb-8 leading-relaxed">
+              <p className="text-lg text-sec-700 mb-8 leading-relaxed">
                 Your carbon footprint represents the total greenhouse gas
                 emissions caused directly and indirectly by your activities.
                 Measured in carbon dioxide equivalents (CO₂e), it's a crucial
@@ -266,8 +285,8 @@ export default function EducationSection() {
               </div>
             </div>
 
-            <div className="rounded-2xl p-8 border border-sec-200 group transition-all duration-300 hover:-translate-y-1">
-              <h3 className="font-inter font-medium text-sec-800 mb-6 text-xl">
+            <div className="rounded-2xl p-6 sm:p-8 border border-sec-200 group transition-all duration-300 hover:-translate-y-1">
+              <h3 className="font-inter font-medium text-sec-800 mb-6 text-lg sm:text-xl">
                 Average Carbon Footprint Breakdown
                 <span className="block text-sm text-sec-600 font-normal mt-1">
                   (Typical Developed Country)
@@ -297,7 +316,7 @@ export default function EducationSection() {
                   },
                 ].map((item, index) => (
                   <div key={index} className="space-y-2">
-                    <div className="flex justify-between text-base">
+                    <div className="flex justify-between text-sm sm:text-base">
                       <span className="font-inter text-sec-700">
                         {item.category}
                       </span>
@@ -305,10 +324,15 @@ export default function EducationSection() {
                         {item.percentage}%
                       </span>
                     </div>
-                    <div className="w-full bg-sec-100 rounded-full h-2">
+                    <div className="w-full bg-sec-100 rounded-full h-2 overflow-hidden">
                       <div
-                        className={`h-2 rounded-full ${item.color} transition-all duration-1000`}
-                        style={{ width: `${item.percentage}%` }}
+                        className={`h-2 rounded-full ${item.color} transition-[width] duration-1000 ease-out`}
+                        style={{
+                          width: animateBreakdown
+                            ? `${item.percentage}%`
+                            : "0%",
+                          transitionDelay: `${index * 120}ms`,
+                        }}
                       ></div>
                     </div>
                   </div>
@@ -322,13 +346,13 @@ export default function EducationSection() {
         </section>
 
         {/* What is Carbon Footprint */}
-        <section id="sub-what" className="py-12">
+        <section id="sub-what" className="py-8 sm:py-10">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 bg-sec-50 rounded-xl flex items-center justify-center border border-sec-200">
               <FaChartLine className="w-6 h-6 text-sec-600" />
             </div>
             <div>
-              <h2 className="text-4xl font-instru font-normal text-sec-900">
+              <h2 className="text-3xl sm:text-4xl font-instru font-normal text-sec-900">
                 What is Carbon Footprint
               </h2>
               <p className="text-sec-600 font-inter mt-2">
@@ -336,19 +360,20 @@ export default function EducationSection() {
               </p>
             </div>
           </div>
+          <div className="space-y-6 my-5">
+            <p className="text-xl text-sec-700 leading-relaxed">
+              A carbon footprint is the total amount of greenhouse gases
+              (including carbon dioxide and methane) that are generated by our
+              actions. The average carbon footprint for a person in the United
+              States is 16 tons, one of the highest rates in the world.
+              Globally, the average is closer to 4 tons.
+            </p>
+          </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-6">
             <div className="space-y-6">
-              <p className="text-xl text-sec-700 leading-relaxed">
-                A carbon footprint is the total amount of greenhouse gases
-                (including carbon dioxide and methane) that are generated by our
-                actions. The average carbon footprint for a person in the United
-                States is 16 tons, one of the highest rates in the world.
-                Globally, the average is closer to 4 tons.
-              </p>
-
               <div className="rounded-2xl p-6 border border-sec-200 group transition-all duration-300 hover:-translate-y-1">
-                <h4 className="font-inter font-medium text-sec-800 mb-4 text-xl">
+                <h4 className="font-inter font-medium text-sec-800 mb-4 text-lg sm:text-xl">
                   Emission Scopes Framework
                 </h4>
                 <div className="space-y-4">
@@ -389,14 +414,14 @@ export default function EducationSection() {
                       className={`border-l-4 pl-4 py-2 ${item.color} transition-colors duration-300`}
                     >
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="font-inter font-medium text-sec-800">
+                        <span className="font-inter  text-sec-700">
                           {item.scope}
                         </span>
-                        <span className="text-base text-sec-600">
-                          • {item.type}
+                        <span className="text-sm sm:text-base font-semibold text-sec-700">
+                          {item.type}
                         </span>
                       </div>
-                      <ul className="text-base text-sec-600 space-y-1">
+                      <ul className="text-sm sm:text-base text-sec-600 space-y-1">
                         {item.examples.map((example, idx) => (
                           <li key={idx} className="flex items-center gap-2">
                             <div className="w-1.5 h-1.5 bg-sec-400 rounded-full"></div>
@@ -411,11 +436,11 @@ export default function EducationSection() {
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-2xl p-6 border border-sec-200 group transition-all duration-300 hover:-translate-y-1">
-                <h4 className="font-inter font-medium text-sec-800 mb-4 text-xl">
+              <div className="rounded-2xl px-6 py-4 border border-sec-200 group transition-all duration-300 hover:-translate-y-1">
+                <h4 className="font-inter font-medium text-sec-800 mb-2 text-xl">
                   Key Emission Sources in Daily Life
                 </h4>
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {[
                     {
                       icon: FaHome,
@@ -450,7 +475,7 @@ export default function EducationSection() {
                         <p className="text-base text-sec-600 mb-2">
                           {item.desc}
                         </p>
-                        <div className="text-sm font-inter font-medium text-sec-700 bg-sec-50 px-2 py-1 rounded-full border border-sec-200">
+                        <div className="text-sm font-inter font-medium text-sec-700 bg-sec-50 px-4 w-fit py-1 rounded-full border border-sec-200">
                           {item.impact}
                         </div>
                       </div>
@@ -463,13 +488,13 @@ export default function EducationSection() {
         </section>
 
         {/* Why It Matters */}
-        <section id="sub-why" className="py-12">
+        <section id="sub-why" className="py-8 sm:py-10">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center border border-amber-200">
               <FaLightbulb className="w-6 h-6 text-sec-600" />
             </div>
             <div>
-              <h2 className="text-4xl font-instru font-normal text-sec-900">
+              <h2 className="text-3xl sm:text-4xl font-instru font-normal text-sec-900">
                 Why Carbon Management Matters
               </h2>
               <p className="text-sec-600 font-inter mt-2">
@@ -497,10 +522,10 @@ export default function EducationSection() {
                     <impact.icon className={`w-6 h-6 text-sec-600`} />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-inter font-medium text-sec-800 mb-3 text-xl">
+                    <h4 className="font-inter font-medium text-sec-800 mb-3 text-lg sm:text-xl">
                       {impact.title}
                     </h4>
-                    <p className="text-sec-600 mb-4 leading-relaxed text-base">
+                    <p className="text-sec-600 mb-4 leading-relaxed text-sm sm:text-base">
                       {impact.desc}
                     </p>
                     <div className="flex justify-between items-center">
@@ -527,13 +552,13 @@ export default function EducationSection() {
         </section>
 
         {/* Emission Sources */}
-        <section id="sub-sources" className="py-12">
+        <section id="sub-sources" className="py-8 sm:py-10">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center border border-orange-200">
               <FaDatabase className="w-6 h-6 text-sec-600" />
             </div>
             <div>
-              <h2 className="text-4xl font-instru font-normal text-sec-900">
+              <h2 className="text-3xl sm:text-4xl font-instru font-normal text-sec-900">
                 Comprehensive Emission Sources
               </h2>
               <p className="text-sec-600 font-inter mt-2">
@@ -542,13 +567,13 @@ export default function EducationSection() {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-2xl font-inter font-medium text-sec-800 mb-6">
+              <h3 className="text-xl sm:text-2xl font-inter font-medium text-sec-800 mb-6">
                 Digital Carbon Footprint
               </h3>
-              <div className="rounded-2xl p-6 border border-sec-200 group transition-all duration-300 hover:-translate-y-1">
-                <p className="text-sec-700 mb-6">
+              <div className="rounded-2xl p-4 sm:p-6 border border-sec-200 group transition-all duration-300 hover:-translate-y-1">
+                <p className="text-sm sm:text-base text-sec-700 mb-6">
                   Digital technologies account for approximately 4% of global
                   greenhouse gas emissions, comparable to the aviation industry.
                   This includes data centers, network infrastructure, and device
@@ -578,12 +603,12 @@ export default function EducationSection() {
             </div>
 
             <div>
-              <h3 className="text-2xl font-inter font-medium text-sec-800 mb-6">
+              <h3 className="text-xl sm:text-2xl font-inter font-medium text-sec-800 mb-6">
                 Global Sector Contributions
               </h3>
               <div className="space-y-6">
                 {GLOBAL_DATA.sectorContributions.map((sector, index) => (
-                  <div key={index} className="flex items-center gap-4">
+                  <div key={index} className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-sec-50 rounded-xl flex items-center justify-center border border-sec-200 flex-shrink-0">
                       <div className="text-sm font-inter font-medium text-sec-700">
                         {sector.percentage}%
@@ -591,7 +616,7 @@ export default function EducationSection() {
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between mb-2">
-                        <span className="font-inter text-sec-800">
+                        <span className="font-inter text-sec-800 text-sm sm:text-base">
                           {sector.sector}
                         </span>
                         <span className="text-xs text-sec-500 font-inter">
@@ -617,13 +642,13 @@ export default function EducationSection() {
         </section>
 
         {/* How CarbonTrack Helps */}
-        <section id="sub-how" className="py-12">
+        <section id="sub-how" className="py-8 sm:py-10">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 bg-sec-50 rounded-xl flex items-center justify-center border border-sec-200">
               <FaLeaf className="w-6 h-6 text-sec-600" />
             </div>
             <div>
-              <h2 className="text-4xl font-instru font-normal text-sec-900">
+              <h2 className="text-3xl sm:text-4xl font-instru font-normal text-sec-900">
                 Taking Action with CarbonTrack
               </h2>
               <p className="text-sec-600 font-inter mt-2">
@@ -665,13 +690,13 @@ export default function EducationSection() {
                 >
                   <step.icon className="w-8 h-8 text-sec-600" />
                 </div>
-                <div className="text-base font-inter font-medium text-sec-700 mb-2">
+                <div className="text-sm sm:text-base font-inter font-medium text-sec-700 mb-2">
                   Step {step.step}
                 </div>
-                <h3 className="text-2xl font-inter font-medium text-sec-800 mb-4">
+                <h3 className="text-xl sm:text-2xl font-inter font-medium text-sec-800 mb-4">
                   {step.title}
                 </h3>
-                <p className="text-sec-600 leading-relaxed text-base">
+                <p className="text-sm sm:text-base text-sec-600 leading-relaxed">
                   {step.desc}
                 </p>
               </div>
@@ -680,13 +705,13 @@ export default function EducationSection() {
         </section>
 
         {/* Reduction Strategies */}
-        <section id="sub-reduce" className="py-12">
+        <section id="sub-reduce" className="py-8 sm:py-10">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center border border-green-200">
               <FaLeaf className="w-6 h-6 text-sec-600" />
             </div>
             <div>
-              <h2 className="text-4xl font-instru font-normal text-sec-900">
+              <h2 className="text-3xl sm:text-4xl font-instru font-normal text-sec-900">
                 Evidence-Based Reduction Strategies
               </h2>
               <p className="text-sec-600 font-inter mt-2">
@@ -695,9 +720,9 @@ export default function EducationSection() {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-2xl font-inter font-medium text-sec-800 mb-6">
+              <h3 className="text-xl sm:text-2xl font-inter font-medium text-sec-800 mb-6">
                 High-Impact Individual Actions
               </h3>
               <div className="space-y-4">
@@ -731,7 +756,7 @@ export default function EducationSection() {
                 ].map((item, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-4 p-4 rounded-xl border border-sec-200 transition-all duration-300 hover:-translate-y-1"
+                    className="flex items-start gap-3 p-3 rounded-xl border border-sec-200 transition-all duration-300 hover:-translate-y-1"
                   >
                     <div
                       className={`w-3 h-3 rounded-full mt-2 ${
@@ -741,10 +766,10 @@ export default function EducationSection() {
                       }`}
                     ></div>
                     <div className="flex-1">
-                      <h4 className="font-inter font-medium text-sec-800 mb-2 text-xl">
+                      <h4 className="font-inter font-medium text-sec-800 mb-2 text-lg">
                         {item.action}
                       </h4>
-                      <p className="text-base text-sec-600 mb-3">
+                      <p className="text-sm sm:text-base text-sec-600 mb-3">
                         {item.impact}
                       </p>
                       <div className="flex justify-between items-center">
@@ -823,13 +848,13 @@ export default function EducationSection() {
         </section>
 
         {/* Global Perspective */}
-        <section id="sub-global" className="py-12">
+        <section id="sub-global" className="py-8 sm:py-10">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 bg-sky-50 rounded-xl flex items-center justify-center border border-sky-200">
               <GiWorld className="w-6 h-6 text-sky-600" />
             </div>
             <div>
-              <h2 className="text-4xl font-instru font-normal text-sec-900">
+              <h2 className="text-3xl sm:text-4xl font-instru font-normal text-sec-900">
                 Global Carbon Landscape
               </h2>
               <p className="text-sec-600 font-inter mt-2">
@@ -838,9 +863,9 @@ export default function EducationSection() {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-2xl font-inter font-medium text-sec-800 mb-6">
+              <h3 className="text-xl sm:text-2xl font-inter font-medium text-sec-800 mb-6">
                 Per Capita Emissions by Country
               </h3>
               <div className="rounded-2xl p-6 border border-sec-200">
@@ -850,18 +875,18 @@ export default function EducationSection() {
                       key={index}
                       className="flex items-center justify-between py-3 border-b border-sec-100 last:border-b-0"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center  gap-3">
                         <div
-                          className={`w-3 h-3 rounded-full ${
-                            parseFloat(country.emissions) > 15
+                          className={`w-3 h-3 rounded-full  ${
+                            parseEmissions(country.emissions) > 15
                               ? "bg-red-500"
-                              : parseFloat(country.emissions) > 8
+                              : parseEmissions(country.emissions) > 8
                               ? "bg-orange-400"
-                              : parseFloat(country.emissions) > 4
+                              : parseEmissions(country.emissions) > 4
                               ? "bg-yellow-400"
-                              : parseFloat(country.emissions) > 2
+                              : parseEmissions(country.emissions) > 2
                               ? "bg-green-400"
-                              : "bg-sec-400"
+                              : "bg-green-700"
                           }`}
                         ></div>
                         <div>
@@ -873,9 +898,39 @@ export default function EducationSection() {
                           </div>
                         </div>
                       </div>
-                      <span className="font-inter font-medium text-sec-800">
-                        {country.emissions} CO₂/year
-                      </span>
+
+                      <div className="ml-4 flex items-center gap-3 ">
+                        <div className="w-40 sm:w-56 bg-sec-100 h-2 rounded-full overflow-hidden">
+                          <div
+                            className={`h-2 ${
+                              parseEmissions(country.emissions) > 15
+                                ? "bg-orange-700"
+                                : parseEmissions(country.emissions) > 8
+                                ? "bg-orange-400"
+                                : parseEmissions(country.emissions) > 4
+                                ? "bg-yellow-500"
+                                : parseEmissions(country.emissions) > 2
+                                ? "bg-green-400"
+                                : "bg-green-700"
+                            } rounded-full transition-all duration-700`}
+                            style={{
+                              width: animatePerCapitaBars
+                                ? `${
+                                    maxEmission > 0
+                                      ? (parseEmissions(country.emissions) /
+                                          maxEmission) *
+                                        100
+                                      : 0
+                                  }%`
+                                : "0%",
+                              transitionDelay: `${index * 80}ms`,
+                            }}
+                          />
+                        </div>
+                        <div className="font-inter font-medium text-sec-800 text-sm">
+                          {country.emissions} CO₂/year
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -883,11 +938,11 @@ export default function EducationSection() {
             </div>
 
             <div>
-              <h3 className="text-2xl font-inter font-medium text-sec-800 mb-6">
+              <h3 className="text-xl sm:text-2xl font-inter font-medium text-sec-800 mb-6">
                 The Path to Net Zero
               </h3>
               <div className="rounded-2xl p-6 border border-sec-200 group transition-all duration-300 hover:-translate-y-1">
-                <p className="text-sec-700 mb-6">
+                <p className="text-sm sm:text-base text-sec-700 mb-6">
                   To limit global warming to 1.5°C, global CO₂ emissions must
                   reach net zero by 2050. This requires unprecedented changes
                   across all sectors of the economy.
@@ -953,17 +1008,17 @@ export default function EducationSection() {
         </section>
 
         {/* CTA Section */}
-        <section id="sub-cta" className="py-16 text-center">
+        <section id="sub-cta" className="py-12 sm:py-16 text-center">
           <div className="max-w-2xl mx-auto">
             <div className="w-20 h-20 bg-sec-50 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-sec-200">
               <GiEarthAmerica className="w-10 h-10 text-sec-600" />
             </div>
 
-            <h3 className="text-4xl lg:text-5xl font-instru font-normal text-sec-900 mb-6">
+            <h3 className="text-3xl sm:text-4xl lg:text-5xl font-instru font-normal text-sec-900 mb-6">
               Ready to Make a Difference?
             </h3>
 
-            <p className="text-xl text-sec-700 mb-8 leading-relaxed">
+            <p className="text-lg text-sec-700 mb-8 leading-relaxed">
               Start tracking your carbon footprint today and join millions
               taking meaningful climate action. Small changes, when multiplied
               by millions of people, can transform the world.
