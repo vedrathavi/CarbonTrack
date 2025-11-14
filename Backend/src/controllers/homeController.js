@@ -7,7 +7,19 @@ import { getOrFetchEmissionFactor } from "../services/emissionFactorService.js";
 // @access  Private
 export const createHome = async (req, res) => {
   try {
-    const { name, address, totalRooms, appliances } = req.body;
+    // Do not accept a 'name' field — the Home model does not include a name
+    const { address, totalRooms, appliances } = req.body;
+
+    // Prevent a user who already belongs to a home from creating another
+    const existingHome = await Home.findOne({ "members.userId": req.user._id });
+    if (existingHome) {
+      return res.status(409).json({
+        status: "error",
+        code: "HOME_ALREADY_EXISTS",
+        message:
+          "You are already a member of a home. A user may only belong to one home.",
+      });
+    }
 
     // Fetch emission factor for the address (country-only lookup in service)
     let emissionFactor = null;
@@ -29,7 +41,6 @@ export const createHome = async (req, res) => {
 
     // Create new home with current user as creator
     const home = await Home.create({
-      name,
       address,
       totalRooms,
       appliances,
@@ -172,8 +183,8 @@ export const updateHome = async (req, res) => {
       });
     }
 
-    // Fields that can be updated
-    const allowedUpdates = ["name", "address", "totalRooms", "appliances"];
+    // Fields that can be updated (no 'name' field in model)
+    const allowedUpdates = ["address", "totalRooms", "appliances"];
 
     // Filter out unwanted fields
     const updates = Object.keys(req.body)
@@ -239,6 +250,43 @@ export const getHomeStats = async (req, res) => {
     res.status(500).json({
       status: "error",
       message: "Error fetching home stats",
+      error: error.message,
+    });
+  }
+};
+
+// @desc    Get members of the current user's home with user info and roles
+// @route   GET /api/homes/members
+// @access  Private
+export const getHomeMembers = async (req, res) => {
+  try {
+    // Find the home that contains the requesting user and populate member user docs
+    const home = await Home.findOne({ "members.userId": req.user._id })
+      .populate("members.userId", "name email profilePic")
+      .lean();
+
+    if (!home) {
+      return res.status(404).json({
+        status: "error",
+        message: "Home not found",
+      });
+    }
+
+    // Map members to include role and populated user info. Filter out any empty entries.
+    const members = (home.members || [])
+      .filter((m) => m && m.userId)
+      .map((m) => ({ role: m.role, user: m.userId }));
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        members,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: "Error fetching home members",
       error: error.message,
     });
   }

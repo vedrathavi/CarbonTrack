@@ -3,10 +3,11 @@ import {
   GET_MY_HOME_ROUTE,
   UPDATE_HOME_ROUTE,
   HOME_STATS_ROUTE,
+  HOME_MEMBERS_ROUTE,
 } from "../../utils/constants";
 
 export const createHomeSlice = (set, get) => ({
-  // State
+  // state
   home: null,
   homeLoading: false,
   homeError: null,
@@ -15,7 +16,7 @@ export const createHomeSlice = (set, get) => ({
   statsLoading: false,
   statsError: null,
 
-  // Setters
+  // setters
   setHome: (home) => set({ home, homeError: null }),
   clearHome: () =>
     set({
@@ -27,18 +28,16 @@ export const createHomeSlice = (set, get) => ({
       statsError: null,
     }),
 
-  // Fetch the current user's home details
+  // actions
   fetchMyHome: async () => {
     set({ homeLoading: true, homeError: null });
     try {
       const res = await apiClient.get(GET_MY_HOME_ROUTE);
-      // Expect either { home: {...} } or the home object directly
       const home = res.data?.home ?? res.data ?? null;
       set({ home, homeLoading: false });
       return home;
     } catch (err) {
       const status = err?.response?.status;
-      // If user has no home yet (404/204), keep home as null
       if (status === 404 || status === 204) {
         set({ home: null, homeLoading: false, homeError: null });
         return null;
@@ -49,7 +48,6 @@ export const createHomeSlice = (set, get) => ({
     }
   },
 
-  // Update home details (partial updates)
   updateHome: async (updates) => {
     set({ homeLoading: true, homeError: null });
     try {
@@ -64,10 +62,8 @@ export const createHomeSlice = (set, get) => ({
     }
   },
 
-  // Fetch aggregated home stats (emissions, breakdown, etc.)
   fetchHomeStats: async () => {
     const currentHome = get().home;
-    // If no home exists yet, don't call the API
     if (!currentHome) {
       set({ homeStats: null, statsLoading: false, statsError: null });
       return null;
@@ -90,4 +86,21 @@ export const createHomeSlice = (set, get) => ({
       return null;
     }
   },
+
+  fetchHomeMembers: async () => {
+    set({ homeLoading: true, homeError: null });
+    try {
+      const res = await apiClient.get(HOME_MEMBERS_ROUTE);
+      const members =
+        res?.data?.data?.members ?? res?.data?.members ?? res?.data ?? [];
+      set({ homeLoading: false });
+      return Array.isArray(members) ? members : [];
+    } catch (err) {
+      const message = err?.response?.data?.message || "Failed to fetch members";
+      set({ homeLoading: false, homeError: message });
+      return [];
+    }
+  },
 });
+
+export default createHomeSlice;

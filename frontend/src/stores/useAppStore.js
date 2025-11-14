@@ -11,8 +11,8 @@ export const useAppStore = create(
     }),
     {
       name: "app-storage",
-      // only persist userInfo (do not persist loading/error transient flags)
-      partialize: (state) => ({ userInfo: state.userInfo }),
+      // persist only userInfo and home (avoid persisting transient loading/error flags)
+      partialize: (state) => ({ userInfo: state.userInfo, home: state.home }),
     }
   )
 );

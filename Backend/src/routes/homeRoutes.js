@@ -6,6 +6,7 @@ import {
   getMyHome,
   updateHome,
   getHomeStats,
+  getHomeMembers,
 } from "../controllers/homeController.js";
 
 const router = express.Router();
@@ -19,5 +20,6 @@ router.post("/join", joinHome);
 router.get("/me", getMyHome);
 router.patch("/", updateHome);
 router.get("/stats", getHomeStats);
+router.get("/members", getHomeMembers);
 
 export default router;

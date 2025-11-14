@@ -265,7 +265,7 @@ export default function EducationSection() {
 
               <div className="flex flex-wrap gap-4">
                 <div className="btn-3d-wrapper">
-                  <div className="btn-3d-offset" aria-hidden />
+                  <div className="btn-3d-offset " aria-hidden />
                   <button
                     onClick={() =>
                       window.dispatchEvent(
@@ -274,7 +274,7 @@ export default function EducationSection() {
                         })
                       )
                     }
-                    className="btn-3d btn-3d--primary"
+                    className="!bg-sec-600 btn-3d btn-3d--primary "
                   >
                     <span className="flex items-center gap-2 text-md text-prim-100 font-inter font-medium">
                       Learn How to Reduce
@@ -1029,7 +1029,7 @@ export default function EducationSection() {
                 <div className="btn-3d-offset" aria-hidden />
                 <button
                   onClick={() => navigate("/dashboard")}
-                  className="btn-3d btn-3d--primary"
+                  className=" !bg-sec-600 btn-3d btn-3d--primary"
                 >
                   <span className="flex items-center gap-2 text-md text-prim-100 font-inter font-medium">
                     Start Tracking Now
