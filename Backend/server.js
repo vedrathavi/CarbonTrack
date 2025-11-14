@@ -6,6 +6,8 @@ import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import passport from "passport";
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
 
 // register passport strategies (side-effect)
 import "./src/services/passport.js";
@@ -13,6 +15,8 @@ import "./src/services/passport.js";
 import authRouter from "./src/routes/authRoutes.js";
 import homeRouter from "./src/routes/homeRoutes.js";
 import emissionRouter from "./src/routes/emissionRoutes.js";
+import simulationRouter from "./src/routes/simulationRoutes.js";
+import { initScheduler } from "./src/services/scheduler.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -42,6 +46,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/home", homeRouter);
 // mount emission factor routes
 app.use("/api/emission-factor", emissionRouter);
+// simulation routes (manual triggers)
+app.use("/api/simulation", simulationRouter);
 
 // Connect to Mongo and start server after success
 const MONGO_URI = process.env.MONGO_URI;
@@ -61,7 +67,40 @@ mongoose
   .then(() => {
     console.log("MongoDB connected");
     app.get("/", (req, res) => res.send("Server is running!"));
-    app.listen(PORT, () => {
+
+    // Create HTTP server and attach Socket.IO
+    const server = http.createServer(app);
+    const io = new SocketIOServer(server, {
+      cors: {
+        origin: CLIENT_URL,
+        credentials: true,
+      },
+    });
+
+    io.on("connection", (socket) => {
+      console.log("socket connected", socket.id);
+      // Allow clients to join rooms for their homes: { homeId }
+      socket.on("joinHome", (payload) => {
+        try {
+          const homeId = payload && payload.homeId;
+          if (homeId) {
+            socket.join(`home_${homeId}`);
+            console.log(`socket ${socket.id} joined room home_${homeId}`);
+          }
+        } catch (e) {
+          // ignore
+        }
+      });
+    });
+
+    // Initialize scheduler that will use `io` to broadcast hourly updates
+    try {
+      initScheduler({ io });
+    } catch (e) {
+      console.error("Failed to initialize scheduler:", e);
+    }
+
+    server.listen(PORT, () => {
       console.log(`Server listening on port ${PORT}`);
     });
   })
@@ -72,8 +111,9 @@ mongoose
       reason: err?.reason || err?.stack,
     });
     // Helpful troubleshooting tips for the developer
-    console.error("Tips: check MONGO_URI, internet access, and MongoDB Atlas IP whitelist (or allow 0.0.0.0/0 for testing).\n" +
-      "You can also try increasing serverSelectionTimeoutMS in server.js if your network is slow.");
+    console.error(
+      "Tips: check MONGO_URI, internet access, and MongoDB Atlas IP whitelist (or allow 0.0.0.0/0 for testing).\n" +
+        "You can also try increasing serverSelectionTimeoutMS in server.js if your network is slow."
+    );
     process.exit(1);
   });
-

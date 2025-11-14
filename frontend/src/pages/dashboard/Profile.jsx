@@ -152,7 +152,7 @@ export default function Profile() {
 
             <div className="flex items-center gap-2">
               <div className="flex-1 bg-neu-0 border border-prim-200 rounded-lg p-3">
-                <div className="font-mono text-base text-sec-900 tracking-wide text-center font-inter">
+                <div className="font-mono text-base text-sec-900 tracking-wide text-center">
                   {resolvedHome?.homeCode || "NO-ID-AVAILABLE"}
                 </div>
               </div>
