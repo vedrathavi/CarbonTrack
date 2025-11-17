@@ -16,6 +16,7 @@ import authRouter from "./src/routes/authRoutes.js";
 import homeRouter from "./src/routes/homeRoutes.js";
 import emissionRouter from "./src/routes/emissionRoutes.js";
 import simulationRouter from "./src/routes/simulationRoutes.js";
+import dashboardRouter from "./src/routes/dashboardRoutes.js";
 import { initScheduler } from "./src/services/scheduler.js";
 
 const app = express();
@@ -48,6 +49,8 @@ app.use("/api/home", homeRouter);
 app.use("/api/emission-factor", emissionRouter);
 // simulation routes (manual triggers)
 app.use("/api/simulation", simulationRouter);
+// dashboard endpoints
+app.use("/api/dashboard", dashboardRouter);
 
 // Connect to Mongo and start server after success
 const MONGO_URI = process.env.MONGO_URI;

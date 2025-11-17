@@ -22,3 +22,15 @@ export const HOME_MEMBERS_ROUTE = `${HOME_ROUTES}/members`; // GET
 
 // Emission factor API route
 export const EMISSION_FACTOR_ROUTE = `${API_PREFIX}/emission-factor`; // GET with query params: city, state, country
+
+// Dashboard routes
+export const DASHBOARD_ROUTE = `${API_PREFIX}/dashboard`;
+export const getDashboardToday = (homeId) => `${DASHBOARD_ROUTE}/${homeId}/today`;
+export const getDashboardWeek = (homeId) => `${DASHBOARD_ROUTE}/${homeId}/week`;
+export const getDashboardMonth = (homeId) => `${DASHBOARD_ROUTE}/${homeId}/month`;
+export const getDashboardComparison = (homeId, days = 7) => `${DASHBOARD_ROUTE}/${homeId}/comparison?days=${days}`;
+
+// Simulation fallback routes
+export const SIMULATION_ROUTE = `${API_PREFIX}/simulation`;
+export const getSimulationLatestRoute = (homeId) => `${SIMULATION_ROUTE}/latest/${homeId}`;
+export const getSimulationHourlyRoute = (homeId, qs = "") => `${SIMULATION_ROUTE}/hourly/${homeId}${qs ? `?${qs}` : ""}`;

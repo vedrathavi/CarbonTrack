@@ -1,6 +1,18 @@
 import Home from "../models/Home.js";
 import HourlyEmission from "../models/HourlyEmission.js";
 import simulateEmissions from "../services/simulationService.js";
+import mongoose from "mongoose";
+
+// Resolve a provided identifier which may be a Mongo ObjectId or a homeCode string
+async function resolveHomeId(identifier) {
+  if (!identifier) throw new Error("homeId required");
+  const asString = String(identifier);
+  if (mongoose.Types.ObjectId.isValid(asString))
+    return new mongoose.Types.ObjectId(asString);
+  const h = await Home.findOne({ homeCode: asString }).select("_id").lean();
+  if (!h) throw new Error("Home not found");
+  return h._id;
+}
 
 /**
  * Simulate for a single home and persist the result.
@@ -8,7 +20,8 @@ import simulateEmissions from "../services/simulationService.js";
  * @param {Date|string} [date]
  */
 export async function simulateAndSave(homeId, date = new Date()) {
-  const home = await Home.findById(homeId).lean();
+  const resolved = await resolveHomeId(homeId);
+  const home = await Home.findById(resolved).lean();
   if (!home) throw new Error("Home not found");
 
   // Build appliances map from home.appliances
@@ -33,7 +46,7 @@ export async function simulateAndSave(homeId, date = new Date()) {
   );
 
   // Upsert: prefer findOne + save to ensure pre-save hooks run and summary computed
-  let doc = await HourlyEmission.findOne({ homeId, date: utcDate });
+  let doc = await HourlyEmission.findOne({ homeId: resolved, date: utcDate });
   if (doc) {
     doc.emissions = sim.emissions;
     doc.totalHourly = sim.totalHourly;
@@ -48,7 +61,7 @@ export async function simulateAndSave(homeId, date = new Date()) {
     await doc.save();
   } else {
     doc = await HourlyEmission.create({
-      homeId,
+      homeId: resolved,
       date: utcDate,
       emissions: sim.emissions,
       totalHourly: sim.totalHourly,
@@ -102,7 +115,8 @@ export async function getLatestHourlyEmission(req, res) {
   try {
     const { homeId } = req.params;
     if (!homeId) return res.status(400).json({ error: "homeId required" });
-    const doc = await HourlyEmission.findOne({ homeId })
+    const resolved = await resolveHomeId(homeId);
+    const doc = await HourlyEmission.findOne({ homeId: resolved })
       .sort({ date: -1 })
       .lean();
     if (!doc)
@@ -179,17 +193,24 @@ export async function fetchHourlyEmissionAt(
   // options: { simulateIfMissing: boolean }
   const { simulateIfMissing = false } = options || {};
   if (!homeId) throw new Error("homeId required");
+  const resolved = await resolveHomeId(homeId);
   const targetDate = normalizeDateToUTCDay(date ? new Date(date) : new Date());
   const hourIndex =
     typeof hour === "number" && !Number.isNaN(hour)
       ? hour
       : new Date().getUTCHours();
 
-  let doc = await HourlyEmission.findOne({ homeId, date: targetDate }).lean();
+  let doc = await HourlyEmission.findOne({
+    homeId: resolved,
+    date: targetDate,
+  }).lean();
   if (!doc && simulateIfMissing) {
     try {
-      await simulateAndSave(homeId, targetDate);
-      doc = await HourlyEmission.findOne({ homeId, date: targetDate }).lean();
+      await simulateAndSave(resolved, targetDate);
+      doc = await HourlyEmission.findOne({
+        homeId: resolved,
+        date: targetDate,
+      }).lean();
     } catch (e) {
       console.warn(
         `fetchHourlyEmissionAt: simulateAndSave failed for ${homeId} ${targetDate}:`,
@@ -217,7 +238,7 @@ export async function fetchHourlyEmissionAt(
     : null;
 
   return {
-    homeId,
+    homeId: resolved,
     date: doc.date,
     hour: hourIndex,
     total,

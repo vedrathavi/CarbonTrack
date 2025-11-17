@@ -15,7 +15,6 @@ export const createAuthSlice = (set, get) => ({
     set({ loading: true, error: null });
     try {
       const res = await apiClient.get(GET_USER_INFO);
-      console.log("Fetched user:", res.data);
       set({ userInfo: res.data?.user || res.data, loading: false });
     } catch (err) {
       console.error("Error fetching user:", err?.response?.data || err);
