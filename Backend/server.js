@@ -88,6 +88,7 @@ mongoose
             console.log(`socket ${socket.id} joined room home_${homeId}`);
           }
         } catch (e) {
+          console.error("joinHome error:", e);
           // ignore
         }
       });

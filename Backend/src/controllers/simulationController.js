@@ -37,6 +37,13 @@ export async function simulateAndSave(homeId, date = new Date()) {
   if (doc) {
     doc.emissions = sim.emissions;
     doc.totalHourly = sim.totalHourly;
+    // Ensure required summary fields are set so validation passes
+    if (sim.summary) {
+      doc.summary = {
+        totalEmissions: Number(sim.summary.totalEmissions || 0),
+        topAppliance: sim.summary.topAppliance || null,
+      };
+    }
     // save will run pre-save hooks to recompute summary
     await doc.save();
   } else {
@@ -45,6 +52,12 @@ export async function simulateAndSave(homeId, date = new Date()) {
       date: utcDate,
       emissions: sim.emissions,
       totalHourly: sim.totalHourly,
+      summary: sim.summary
+        ? {
+            totalEmissions: Number(sim.summary.totalEmissions || 0),
+            topAppliance: sim.summary.topAppliance || null,
+          }
+        : undefined,
     });
   }
 

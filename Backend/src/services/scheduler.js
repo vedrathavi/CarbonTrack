@@ -21,10 +21,10 @@ function normalizeToUTCDate(d = new Date()) {
 export function initScheduler({ io } = {}) {
   // Daily at 00:05 UTC -> simulate TODAY for all homes
   cron.schedule(
-    "5 0 * * *",
+    "30 18 * * *",
     async () => {
       console.log(
-        "[scheduler] daily job started (00:05 UTC): simulating today"
+        "[scheduler] daily job started (19:00 UTC): simulating today"
       );
       try {
         const homes = await Home.find({}).select("_id").lean();
