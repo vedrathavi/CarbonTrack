@@ -8,9 +8,12 @@ export async function getToday(req, res) {
     if (!homeId) return res.status(400).json({ error: "homeId required" });
     // Resolve identifier (accept homeCode or ObjectId)
     let resolved;
-    if (mongoose.Types.ObjectId.isValid(String(homeId))) resolved = new mongoose.Types.ObjectId(String(homeId));
+    if (mongoose.Types.ObjectId.isValid(String(homeId)))
+      resolved = new mongoose.Types.ObjectId(String(homeId));
     else {
-      const h = await Home.findOne({ homeCode: String(homeId) }).select("_id").lean();
+      const h = await Home.findOne({ homeCode: String(homeId) })
+        .select("_id")
+        .lean();
       if (!h) return res.status(404).json({ error: "Home not found" });
       resolved = h._id;
     }
@@ -18,7 +21,11 @@ export async function getToday(req, res) {
     // Authorization: require membership
     const homeDoc = await Home.findById(resolved).lean();
     if (!homeDoc) return res.status(404).json({ error: "Home not found" });
-    if (!req.user || !homeDoc.members || !homeDoc.members.some(m => String(m.userId) === String(req.user._id))) {
+    if (
+      !req.user ||
+      !homeDoc.members ||
+      !homeDoc.members.some((m) => String(m.userId) === String(req.user._id))
+    ) {
       return res.status(403).json({ error: "Forbidden" });
     }
 
@@ -36,16 +43,23 @@ export async function getWeek(req, res) {
     const { homeId } = req.params;
     if (!homeId) return res.status(400).json({ error: "homeId required" });
     let resolved;
-    if (mongoose.Types.ObjectId.isValid(String(homeId))) resolved = new mongoose.Types.ObjectId(String(homeId));
+    if (mongoose.Types.ObjectId.isValid(String(homeId)))
+      resolved = new mongoose.Types.ObjectId(String(homeId));
     else {
-      const h = await Home.findOne({ homeCode: String(homeId) }).select("_id").lean();
+      const h = await Home.findOne({ homeCode: String(homeId) })
+        .select("_id")
+        .lean();
       if (!h) return res.status(404).json({ error: "Home not found" });
       resolved = h._id;
     }
 
     const homeDoc = await Home.findById(resolved).lean();
     if (!homeDoc) return res.status(404).json({ error: "Home not found" });
-    if (!req.user || !homeDoc.members || !homeDoc.members.some(m => String(m.userId) === String(req.user._id))) {
+    if (
+      !req.user ||
+      !homeDoc.members ||
+      !homeDoc.members.some((m) => String(m.userId) === String(req.user._id))
+    ) {
       return res.status(403).json({ error: "Forbidden" });
     }
 
@@ -62,16 +76,23 @@ export async function getMonth(req, res) {
     const { homeId } = req.params;
     if (!homeId) return res.status(400).json({ error: "homeId required" });
     let resolved;
-    if (mongoose.Types.ObjectId.isValid(String(homeId))) resolved = new mongoose.Types.ObjectId(String(homeId));
+    if (mongoose.Types.ObjectId.isValid(String(homeId)))
+      resolved = new mongoose.Types.ObjectId(String(homeId));
     else {
-      const h = await Home.findOne({ homeCode: String(homeId) }).select("_id").lean();
+      const h = await Home.findOne({ homeCode: String(homeId) })
+        .select("_id")
+        .lean();
       if (!h) return res.status(404).json({ error: "Home not found" });
       resolved = h._id;
     }
 
     const homeDoc = await Home.findById(resolved).lean();
     if (!homeDoc) return res.status(404).json({ error: "Home not found" });
-    if (!req.user || !homeDoc.members || !homeDoc.members.some(m => String(m.userId) === String(req.user._id))) {
+    if (
+      !req.user ||
+      !homeDoc.members ||
+      !homeDoc.members.some((m) => String(m.userId) === String(req.user._id))
+    ) {
       return res.status(403).json({ error: "Forbidden" });
     }
 
@@ -90,16 +111,23 @@ export async function getComparison(req, res) {
     const days = req.query.days ? Number(req.query.days) : 7;
 
     let resolved;
-    if (mongoose.Types.ObjectId.isValid(String(homeId))) resolved = new mongoose.Types.ObjectId(String(homeId));
+    if (mongoose.Types.ObjectId.isValid(String(homeId)))
+      resolved = new mongoose.Types.ObjectId(String(homeId));
     else {
-      const h = await Home.findOne({ homeCode: String(homeId) }).select("_id").lean();
+      const h = await Home.findOne({ homeCode: String(homeId) })
+        .select("_id")
+        .lean();
       if (!h) return res.status(404).json({ error: "Home not found" });
       resolved = h._id;
     }
 
     const homeDoc = await Home.findById(resolved).lean();
     if (!homeDoc) return res.status(404).json({ error: "Home not found" });
-    if (!req.user || !homeDoc.members || !homeDoc.members.some(m => String(m.userId) === String(req.user._id))) {
+    if (
+      !req.user ||
+      !homeDoc.members ||
+      !homeDoc.members.some((m) => String(m.userId) === String(req.user._id))
+    ) {
       return res.status(403).json({ error: "Forbidden" });
     }
 

@@ -8,6 +8,10 @@ const router = express.Router();
 router.get("/:homeId/today", verifyToken, dashboardController.getToday);
 router.get("/:homeId/week", verifyToken, dashboardController.getWeek);
 router.get("/:homeId/month", verifyToken, dashboardController.getMonth);
-router.get("/:homeId/comparison", verifyToken, dashboardController.getComparison);
+router.get(
+  "/:homeId/comparison",
+  verifyToken,
+  dashboardController.getComparison
+);
 
 export default router;
