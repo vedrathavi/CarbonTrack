@@ -191,6 +191,50 @@ SDL Project/
 - Emission factor value (gCO2/kWh as float)
 - Auto-cached from Climatiq API
 
+## 🏗️ Backend Details
+
+This project backend is structured to separate transport (routes), request handling (controllers), business logic (services), and persistence (models). Below is a short reference to help contributors navigate the `Backend/src` code.
+
+- **Entry point**: `Backend/server.js` — starts the Express app, registers middleware and routes, and reads environment variables.
+
+- **Routes** (in `Backend/src/routes`):
+
+  - `authRoutes.js` — authentication and user endpoints (Google OAuth, logout, current user).
+  - `homeRoutes.js` — home-related endpoints (create/join/update home, get home stats).
+  - `emissionRoutes.js` — endpoints that provide emission-factor lookup and emissions data endpoints.
+
+- **Controllers** (in `Backend/src/controllers`): Controllers accept validated HTTP requests from routes and call services or models to perform actions. Key controllers:
+
+  - `authController.js` — handles login/callback, user creation and session endpoints.
+  - `homeController.js`` — create/join home flows, returning home details and admin operations.
+  - `emissionController.js` — returns emission-factor data and prepares emission-related responses for the frontend.
+
+- **Services** (in `Backend/src/services`): Business logic and external API integrations live here.
+
+  - `emissionFactorService.js` — integrates with the Climatiq API, caches results in MongoDB (`EmissionFactor` model), and normalizes values (gCO2/kWh).
+  - `passport.js` — Passport/Google OAuth configuration used by `authRoutes`/`authController`.
+
+- **Models** (in `Backend/src/models`): Mongoose models representing domain entities.
+
+  - `User.js` — user profile, Google OAuth identifiers, and references to homes.
+  - `Home.js` — home metadata (location, rooms, appliances, members, emission factor reference).
+  - `EmissionFactor.js` — cached emission factor per country (ISO code + value in gCO2/kWh).
+
+- **Middleware** (in `Backend/src/middleware`):
+
+  - `verifyToken.js` — JWT verification middleware applied to protected routes.
+
+- **Utilities** (in `Backend/src/utils`):
+  - `errors.js` — custom error types and helpers used by controllers and services.
+
+Notes & conventions:
+
+- Controllers are thin: they parse request input, call services, and return HTTP responses (status + body). Business rules, caching, and third-party API calls belong in services.
+- Routes register Express handlers and mount middleware (e.g., `verifyToken`) to protect endpoints.
+- Emission factors are stored as grams CO₂ per kWh (gCO2/kWh) and the frontend converts or formats units as needed.
+
+If you want to extend the backend, look for the corresponding controller in `Backend/src/controllers` and follow the existing pattern: add a service function in `Backend/src/services`, test it in the controller, and then expose it via a new route under `Backend/src/routes`.
+
 ## 🎨 Design Features
 
 - Custom color palette with green theme
