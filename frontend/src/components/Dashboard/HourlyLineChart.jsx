@@ -247,7 +247,12 @@ function HourlyLineChartInner({ hourly = null }) {
                   return (
                     <g transform={`translate(${cx},${cy})`}>
                       <g>
-                        <circle r={14} fill="none" stroke="#7dd303" strokeWidth={2}>
+                        <circle
+                          r={14}
+                          fill="none"
+                          stroke="#7dd303"
+                          strokeWidth={2}
+                        >
                           <animateTransform
                             attributeName="transform"
                             attributeType="XML"
@@ -260,7 +265,12 @@ function HourlyLineChartInner({ hourly = null }) {
                             keySplines="0.4 0 0.2 1;0.4 0 0.2 1"
                           />
                         </circle>
-                        <circle r={6} fill="#7dd303" stroke="#ffffff" strokeWidth={2}>
+                        <circle
+                          r={6}
+                          fill="#7dd303"
+                          stroke="#ffffff"
+                          strokeWidth={2}
+                        >
                           <animateTransform
                             attributeName="transform"
                             attributeType="XML"
