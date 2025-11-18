@@ -8,22 +8,27 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import { FiCalendar } from "react-icons/fi";
 
 function formatWeekData(week) {
   if (!week || !Array.isArray(week.data)) return [];
   return week.data.map((d) => ({
     date: d.date,
-    label: new Date(d.date).toLocaleDateString(),
+    label: new Date(d.date).toLocaleDateString("en-US", { weekday: "short" }),
     total: typeof d.total === "number" ? d.total : Number(d.total) || 0,
-    topAppliance: d.topAppliance || null,
+    fullDate: new Date(d.date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    }),
   }));
 }
 
 export default function WeeklyBarChart({ week }) {
   if (!week) {
     return (
-      <div className="p-4 bg-white rounded shadow h-64 flex items-center justify-center">
-        <div className="text-sm text-gray-500">No weekly data available</div>
+      <div className="h-40 flex flex-col items-center justify-center text-sec-500 font-inter text-sm">
+        <FiCalendar className="w-8 h-8 mb-2 text-sec-400" />
+        No weekly data available
       </div>
     );
   }
@@ -32,33 +37,35 @@ export default function WeeklyBarChart({ week }) {
 
   if (!data.length) {
     return (
-      <div className="p-4 bg-white rounded shadow h-64 flex items-center justify-center">
-        <div className="text-sm text-gray-500">Not enough historical data</div>
+      <div className="h-40 flex flex-col items-center justify-center text-sec-500 font-inter text-sm">
+        <FiCalendar className="w-8 h-8 mb-2 text-sec-400" />
+        Not enough historical data
       </div>
     );
   }
 
   return (
-    <div className="p-4 bg-white rounded shadow" style={{ minHeight: 240 }}>
-      <h4 className="text-sm text-gray-500 mb-2">
-        Last {week.days} Days — Total CO₂ (kg)
-      </h4>
-      <div style={{ width: "100%", height: 200 }}>
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart
-            data={data}
-            margin={{ top: 10, right: 12, left: 0, bottom: 6 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-            <YAxis tick={{ fontSize: 12 }} />
-            <Tooltip
-              formatter={(v) => [Number(v).toFixed(2) + " kg", "Total"]}
-            />
-            <Bar dataKey="total" fill="#4F46E5" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+    <div className="h-40">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          data={data}
+          margin={{ top: 10, right: 12, left: -20, bottom: 6 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <XAxis dataKey="label" tick={{ fontSize: 11 }} axisLine={false} />
+          <YAxis tick={{ fontSize: 11 }} axisLine={false} />
+          <Tooltip
+            formatter={(v) => [Number(v).toFixed(2) + " kg", "Total"]}
+            labelFormatter={(label, payload) => {
+              if (payload && payload[0]) {
+                return payload[0].payload.fullDate;
+              }
+              return label;
+            }}
+          />
+          <Bar dataKey="total" fill="#4b8b4d" radius={[2, 2, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }

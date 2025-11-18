@@ -6,8 +6,6 @@ import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import passport from "passport";
-import http from "http";
-import { Server as SocketIOServer } from "socket.io";
 
 // register passport strategies (side-effect)
 import "./src/services/passport.js";
@@ -71,40 +69,14 @@ mongoose
     console.log("MongoDB connected");
     app.get("/", (req, res) => res.send("Server is running!"));
 
-    // Create HTTP server and attach Socket.IO
-    const server = http.createServer(app);
-    const io = new SocketIOServer(server, {
-      cors: {
-        origin: CLIENT_URL,
-        credentials: true,
-      },
-    });
-
-    io.on("connection", (socket) => {
-      console.log("socket connected", socket.id);
-      // Allow clients to join rooms for their homes: { homeId }
-      socket.on("joinHome", (payload) => {
-        try {
-          const homeId = payload && payload.homeId;
-          if (homeId) {
-            socket.join(`home_${homeId}`);
-            console.log(`socket ${socket.id} joined room home_${homeId}`);
-          }
-        } catch (e) {
-          console.error("joinHome error:", e);
-          // ignore
-        }
-      });
-    });
-
-    // Initialize scheduler that will use `io` to broadcast hourly updates
+    // Initialize scheduler (no realtime sockets)
     try {
-      initScheduler({ io });
+      initScheduler();
     } catch (e) {
       console.error("Failed to initialize scheduler:", e);
     }
 
-    server.listen(PORT, () => {
+    app.listen(PORT, () => {
       console.log(`Server listening on port ${PORT}`);
     });
   })

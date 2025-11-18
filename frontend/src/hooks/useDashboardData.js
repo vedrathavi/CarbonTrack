@@ -1,6 +1,5 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import api from "../lib/apiClient";
-import { io } from "socket.io-client";
 import {
   getDashboardToday,
   getDashboardWeek,
@@ -27,8 +26,6 @@ export default function useDashboardData(homeId) {
   const [month, setMonth] = useState(null);
   const [comparison, setComparison] = useState(null);
   const [error, setError] = useState(null);
-  const socketRef = useRef(null);
-  const resolvedHomeRef = useRef(null);
 
   useEffect(() => {
     if (!homeId) return;
@@ -46,79 +43,7 @@ export default function useDashboardData(homeId) {
           const d = res.data.data;
           d.totalHourly = normalizeHourlyArray(d.totalHourly);
           setToday(d);
-          // capture server-resolved home id (ObjectId) for socket room
-          if (d.homeId) resolvedHomeRef.current = String(d.homeId);
-
-          // initialize socket and join room
-          try {
-            const SOCKET_URL =
-              import.meta.env.VITE_API_WS_URL || window.location.origin;
-            if (!socketRef.current) {
-              const s = io(SOCKET_URL, { withCredentials: true });
-              socketRef.current = s;
-              s.on("connect", () => {
-                if (resolvedHomeRef.current)
-                  s.emit("joinHome", { homeId: resolvedHomeRef.current });
-              });
-              s.on("hourly-emission-update", (payload) => {
-                if (!payload) return;
-                if (
-                  !resolvedHomeRef.current ||
-                  String(payload.homeId) !== String(resolvedHomeRef.current)
-                )
-                  return;
-                // full-day payload
-                if (payload.fullDay) {
-                  const fd = payload.fullDay;
-                  fd.totalHourly = normalizeHourlyArray(fd.totalHourly);
-                  setToday(fd);
-                  return;
-                }
-                // patch hourly
-                setToday((prev) => {
-                  if (!prev) return prev;
-                  const next = { ...prev };
-                  next.totalHourly = normalizeHourlyArray(
-                    next.totalHourly || []
-                  );
-                  const idx = Number(payload.hour);
-                  if (!Number.isNaN(idx) && idx >= 0 && idx < 24) {
-                    next.totalHourly = next.totalHourly.map((v, i) =>
-                      i === idx ? Number(payload.total || 0) : v
-                    );
-                  }
-                  if (payload.perAppliance) {
-                    next.emissions = next.emissions || {};
-                    next.applianceTotals = next.applianceTotals || {};
-                    for (const [k, v] of Object.entries(payload.perAppliance)) {
-                      const arr = Array.isArray(next.emissions[k])
-                        ? [...next.emissions[k]]
-                        : new Array(24).fill(0);
-                      if (!Number.isNaN(idx) && idx >= 0 && idx < 24)
-                        arr[idx] = Number(v || 0);
-                      next.emissions[k] = arr;
-                      next.applianceTotals[k] = Number(
-                        arr.reduce((a, b) => a + (Number(b) || 0), 0).toFixed(2)
-                      );
-                    }
-                  }
-                  next.summary = next.summary || {};
-                  next.summary.totalEmissions = Number(
-                    next.totalHourly
-                      .reduce((a, b) => a + (Number(b) || 0), 0)
-                      .toFixed(2)
-                  );
-                  return next;
-                });
-              });
-            } else if (socketRef.current && resolvedHomeRef.current) {
-              socketRef.current.emit("joinHome", {
-                homeId: resolvedHomeRef.current,
-              });
-            }
-          } catch {
-            // ignore socket errors
-          }
+          // no realtime sockets: simply set today's data
 
           setLoading(false);
           return;
@@ -142,27 +67,7 @@ export default function useDashboardData(homeId) {
               emissions: doc.emissions || {},
             };
             setToday(normalized);
-            if (doc.homeId) {
-              try {
-                const SOCKET_URL =
-                  import.meta.env.VITE_SERVER_URL || window.location.origin;
-                if (!socketRef.current) {
-                  const s = io(SOCKET_URL, { withCredentials: true });
-                  socketRef.current = s;
-                  s.on("connect", () =>
-                    s.emit("joinHome", { homeId: String(doc.homeId) })
-                  );
-                  s.on("hourly-emission-update", () => {});
-                } else {
-                  socketRef.current.emit("joinHome", {
-                    homeId: String(doc.homeId),
-                  });
-                }
-                resolvedHomeRef.current = String(doc.homeId);
-              } catch {
-                // ignore
-              }
-            }
+            // no realtime sockets: nothing to init
             setLoading(false);
             return;
           }
@@ -223,14 +128,6 @@ export default function useDashboardData(homeId) {
 
     return () => {
       mounted = false;
-      if (socketRef.current) {
-        try {
-          socketRef.current.disconnect();
-        } catch {
-          /* ignore */
-        }
-        socketRef.current = null;
-      }
     };
   }, [homeId]);
 
