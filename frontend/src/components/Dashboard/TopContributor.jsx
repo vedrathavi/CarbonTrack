@@ -18,7 +18,7 @@ export default function TopContributor({
   // Calculate total emissions and find top contributor
   const entries = Object.entries(applianceTotals || {});
   const totalEmissions = entries.reduce(
-    (sum, [_, val]) => sum + Number(val || 0),
+    (sum, [, val]) => sum + Number(val || 0),
     0
   );
 
