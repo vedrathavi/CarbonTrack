@@ -11,11 +11,13 @@ const COOKIE_NAME = "token";
 
 const oauthClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
+const isProd = process.env.NODE_ENV === "production";
 const cookieOptions = {
   httpOnly: true,
   path: "/",
-  sameSite: "lax", // change to "none" + secure=true for cross-site in prod
-  secure: process.env.NODE_ENV === "production",
+  // Use 'none' + secure in production so cookies are sent in cross-site requests
+  sameSite: isProd ? "none" : "lax",
+  secure: isProd,
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
 
@@ -123,8 +125,8 @@ export const authFailure = (req, res) => {
 export const logout = (req, res) => {
   res.clearCookie(COOKIE_NAME, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    sameSite: isProd ? "none" : "lax",
+    secure: isProd,
     path: "/",
   });
   return res.status(200).json({ ok: true, message: "Logged out" });
