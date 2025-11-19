@@ -1,4 +1,5 @@
 import dashboardService from "../services/dashboardService.js";
+import { simulateAndSave } from "./simulationController.js";
 import Home from "../models/Home.js";
 import mongoose from "mongoose";
 
@@ -48,7 +49,27 @@ export async function getToday(req, res) {
       return res.status(403).json({ error: "Forbidden" });
     }
 
-    const data = await dashboardService.getTodayForHome(resolved);
+    let data = await dashboardService.getTodayForHome(resolved);
+    if (!data) {
+      // Try to simulate & save today's data as a fallback (non-destructive)
+      try {
+        console.info(
+          "dashboard.getToday: no data found, attempting simulateAndSave",
+          {
+            homeIdParam: homeId,
+            resolved,
+          }
+        );
+        await simulateAndSave(resolved);
+        // re-fetch
+        data = await dashboardService.getTodayForHome(resolved);
+      } catch (e) {
+        console.warn(
+          "dashboard.getToday: simulateAndSave failed",
+          e?.message || e
+        );
+      }
+    }
     if (!data) return res.status(404).json({ error: "No data for today" });
     return res.json({ ok: true, data });
   } catch (err) {
