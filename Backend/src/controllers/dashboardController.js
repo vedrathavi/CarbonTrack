@@ -14,18 +14,37 @@ export async function getToday(req, res) {
       const h = await Home.findOne({ homeCode: String(homeId) })
         .select("_id")
         .lean();
-      if (!h) return res.status(404).json({ error: "Home not found" });
+      if (!h) {
+        console.warn("dashboard.getToday: homeCode not found", {
+          homeIdParam: homeId,
+          resolved: null,
+          requester: req.user?._id,
+        });
+        return res.status(404).json({ error: "Home not found" });
+      }
       resolved = h._id;
     }
 
     // Authorization: require membership
     const homeDoc = await Home.findById(resolved).lean();
-    if (!homeDoc) return res.status(404).json({ error: "Home not found" });
+    if (!homeDoc) {
+      console.warn("dashboard.getToday: resolved id not found", {
+        homeIdParam: homeId,
+        resolved,
+        requester: req.user?._id,
+      });
+      return res.status(404).json({ error: "Home not found" });
+    }
     if (
       !req.user ||
       !homeDoc.members ||
       !homeDoc.members.some((m) => String(m.userId) === String(req.user._id))
     ) {
+      console.warn("dashboard.getToday: forbidden - user not a member", {
+        homeIdParam: homeId,
+        resolved,
+        requester: req.user?._id,
+      });
       return res.status(403).json({ error: "Forbidden" });
     }
 
