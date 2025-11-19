@@ -96,7 +96,7 @@ function HourlyLineChartInner({ hourly = null }) {
     if (active && payload && payload.length) {
       const isCurrent = payload[0]?.payload?.hour === currentHour;
       return (
-        <div className="bg-neu-0 border border-prim-200 rounded-xl p-4 shadow-lg">
+        <div className=" p-4 shadow-lg">
           <div className="flex items-center gap-2 mb-2">
             <div
               className={`w-3 h-3 rounded-full ${

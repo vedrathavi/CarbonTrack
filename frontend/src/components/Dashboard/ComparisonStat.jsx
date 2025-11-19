@@ -110,9 +110,7 @@ export default function ComparisonStat({ comparison }) {
             )}
           </div>
           <div className="text-xs font-inter">
-            {isBetter
-              ? "Better than global average 🌿"
-              : "Reduce your footprint 📊"}
+            {isBetter ? "Better than global average" : "Reduce your footprint"}
           </div>
         </div>
 

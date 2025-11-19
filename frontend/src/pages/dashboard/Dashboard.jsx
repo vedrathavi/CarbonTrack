@@ -146,7 +146,7 @@ export default function Dashboard() {
         aria-label="Real-time Analytics"
       >
         {/* Hourly Chart - Takes 4/7 width */}
-        <div className="xl:col-span-4 bg-neu-0 rounded-2xl ">
+        <div className="xl:col-span-4  ">
           
           <HourlyLineChart hourly={today ? today.totalHourly : null} />
         </div>

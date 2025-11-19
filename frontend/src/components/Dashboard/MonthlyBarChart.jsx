@@ -49,18 +49,19 @@ export default function MonthlyBarChart({ month }) {
     );
   }
 
-  const colors = ["#317233", "#4b8b4d", "#81bb83", "#a2cda4"];
+  const colors = ["#317233", "#81bb83", "#4b8b4d", "#a2cda4"];
 
   return (
     <div className="h-64">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
-          margin={{ top: 10, right: 12, left: -20, bottom: 6 }}
+          // give extra left margin and Y axis width so labels are visible and not clipped
+          margin={{ top: 10, right: 12, left: 2, bottom: 6 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="label" tick={{ fontSize: 11 }} axisLine={false} />
-          <YAxis tick={{ fontSize: 11 }} axisLine={false} width={35} />
+          <YAxis tick={{ fontSize: 11 }} axisLine={false} width={50} />
           <Tooltip
             formatter={(v) => [Number(v).toFixed(2) + " g", "Total"]}
             labelFormatter={(label, payload) => {
@@ -72,18 +73,19 @@ export default function MonthlyBarChart({ month }) {
           />
           <ReferenceLine
             y={monthlyAvg}
-            stroke="#f37f07"
+            stroke="#6f6f6f"
             strokeDasharray="3 3"
             label={{
               value: `Avg ${monthlyAvg}g`,
               position: "insideTopRight",
-              fill: "#f37f07",
+              fill: "#0f0f0f",
               fontSize: 10,
             }}
           />
           <Bar dataKey="total" radius={[2, 2, 0, 0]}>
             {data.map((entry, idx) => {
-              const seg = Math.floor(idx / 7);
+              // Color each block of 10 days with a single color
+              const seg = Math.floor(idx / 10);
               const fill = colors[seg % colors.length];
               return <Cell key={`cell-${idx}`} fill={fill} />;
             })}

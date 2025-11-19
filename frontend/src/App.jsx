@@ -14,6 +14,7 @@ import EducationSection from "./pages/dashboard/sections/EducationSection";
 import Option3Section from "./pages/dashboard/sections/Option3Section";
 import Option4Section from "./pages/dashboard/sections/Option4Section";
 import Profile from "./pages/dashboard/Profile";
+import Loading from "./pages/Loading";
 const PrivateRoute = ({ children }) => {
   const { userInfo, loading } = useAuth();
 
@@ -125,6 +126,7 @@ const App = () => {
           <Route path="option3" element={<Option3Section />} />
           <Route path="option4" element={<Option4Section />} />
           <Route path="profile" element={<Profile />} />
+          
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

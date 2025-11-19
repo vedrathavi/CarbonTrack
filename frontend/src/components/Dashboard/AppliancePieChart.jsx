@@ -44,7 +44,7 @@ const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     return (
-      <div className="bg-neu-0 border border-prim-200 rounded-xl p-3 shadow-lg">
+      <div className=" rounded-xl p-3 shadow-lg">
         <div className="flex items-center gap-2 mb-2">
           <div
             className="w-3 h-3 rounded-full"
@@ -90,8 +90,6 @@ const CustomLegend = ({ payload }) => {
 export default function AppliancePieChart({ applianceTotals = {} }) {
   const data = useMemo(() => mapToData(applianceTotals), [applianceTotals]);
 
- 
-
   if (!data.length) {
     return (
       <div className="bg-neu-0 rounded-2xl border border-prim-200 p-6 h-120 flex flex-col items-center justify-center">
@@ -123,12 +121,10 @@ export default function AppliancePieChart({ applianceTotals = {} }) {
         </div>
       </div>
 
-    
-
       {/* Chart Container */}
       <div className="h-70">
         <ResponsiveContainer width="100%" height="100%">
-          <PieChart >
+          <PieChart>
             <Pie
               data={data}
               cx="50%"
@@ -161,9 +157,6 @@ export default function AppliancePieChart({ applianceTotals = {} }) {
           payload: item,
         }))}
       />
-
-     
-      
     </div>
   );
 }

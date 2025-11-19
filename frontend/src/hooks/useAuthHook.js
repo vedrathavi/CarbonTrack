@@ -18,8 +18,10 @@ const useAuth = () => {
           setUser(user);
           console.log("User data fetched:", user);
           try {
-            if (typeof fetchMyHome === "function") fetchMyHome().catch(() => {});
+            if (typeof fetchMyHome === "function")
+              fetchMyHome().catch(() => {});
           } catch (e) {
+            console.warn("Error fetching home data:", e);
             /* ignore */
           }
         } else {
@@ -40,6 +42,7 @@ const useAuth = () => {
       try {
         if (typeof fetchMyHome === "function") fetchMyHome().catch(() => {});
       } catch (e) {
+        console.warn("Error fetching home data:", e);
         /* ignore */
       }
     }

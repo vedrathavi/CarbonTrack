@@ -11,14 +11,12 @@ export default function TotalCard({ summary }) {
     return "evening";
   };
 
-
   const getMotivationalMessage = (emissions) => {
-    if (emissions < 5000) return "Great job! You're on track 🎯";
-    if (emissions < 10000) return "Good progress today 📊";
-    return "Let's work on reducing this 💪";
+    if (emissions < 5000) return "Great job! You're on track";
+    if (emissions < 10000) return "Good progress today";
+    return "Let's work on reducing this";
   };
 
-  
   const timeOfDay = getTimeOfDay();
   const motivationalMessage = getMotivationalMessage(
     summary.totalEmissions || 0
@@ -70,10 +68,6 @@ export default function TotalCard({ summary }) {
 
         {/* Progress Section */}
         <div className="space-y-4">
-          
-
-         
-
           {/* Quick Insight */}
           <div className="flex items-center gap-3 p-3 bg-prim-600/20 rounded-xl border border-prim-500/30">
             <FiTrendingUp className="w-4 h-4 text-prim-300 flex-shrink-0" />
