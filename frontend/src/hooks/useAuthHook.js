@@ -4,7 +4,7 @@ import { GET_USER_INFO } from "@/utils/constants";
 import { useEffect, useState } from "react";
 
 const useAuth = () => {
-  const { userInfo, logout, setUser } = useAppStore();
+  const { userInfo, logout, setUser, fetchMyHome } = useAppStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,6 +17,11 @@ const useAuth = () => {
         if (response.status === 200 && user && user._id) {
           setUser(user);
           console.log("User data fetched:", user);
+          try {
+            if (typeof fetchMyHome === "function") fetchMyHome().catch(() => {});
+          } catch (e) {
+            /* ignore */
+          }
         } else {
           logout();
           setUser(undefined);
@@ -32,6 +37,11 @@ const useAuth = () => {
       getUserData();
     } else {
       setLoading(false);
+      try {
+        if (typeof fetchMyHome === "function") fetchMyHome().catch(() => {});
+      } catch (e) {
+        /* ignore */
+      }
     }
 
     return () => {};
