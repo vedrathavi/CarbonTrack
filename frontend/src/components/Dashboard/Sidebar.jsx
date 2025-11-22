@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { BsStars } from "react-icons/bs";
 import useAppStore from "@/stores/useAppStore";
 import logoImg from "@/assets/logo.svg";
 import {
@@ -11,6 +12,7 @@ import {
   FiChevronDown,
   FiChevronRight,
   FiLogOut,
+  FiStar,
 } from "react-icons/fi";
 import {
   Dialog,
@@ -23,6 +25,8 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { GiLightningTear } from "react-icons/gi";
+import { IoStarHalfOutline } from "react-icons/io5";
 
 const Icon = ({ name, className = "w-5 h-5" }) => {
   switch (name) {
@@ -34,6 +38,8 @@ const Icon = ({ name, className = "w-5 h-5" }) => {
       return <FiGrid className={className} />;
     case "profile":
       return <FiUser className={className} />;
+    case "star":
+      return <BsStars className={className} />;
     default:
       return <FiSettings className={className} />;
   }
@@ -66,14 +72,10 @@ const sections = [
     ],
   },
   {
-    key: "option3",
-    label: "Option 3",
-    icon: "option",
-    subs: [
-      { id: "sub-1", label: "Sub-option 1" },
-      { id: "sub-2", label: "Sub-option 2" },
-      { id: "sub-3", label: "Sub-option 3" },
-    ],
+    key: "insights",
+    label: "Insights",
+    icon: "star",
+    
   },
   {
     key: "option4",

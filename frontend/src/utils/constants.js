@@ -25,12 +25,24 @@ export const EMISSION_FACTOR_ROUTE = `${API_PREFIX}/emission-factor`; // GET wit
 
 // Dashboard routes
 export const DASHBOARD_ROUTE = `${API_PREFIX}/dashboard`;
-export const getDashboardToday = (homeId) => `${DASHBOARD_ROUTE}/${homeId}/today`;
+export const getDashboardToday = (homeId) =>
+  `${DASHBOARD_ROUTE}/${homeId}/today`;
 export const getDashboardWeek = (homeId) => `${DASHBOARD_ROUTE}/${homeId}/week`;
-export const getDashboardMonth = (homeId) => `${DASHBOARD_ROUTE}/${homeId}/month`;
-export const getDashboardComparison = (homeId, days = 7) => `${DASHBOARD_ROUTE}/${homeId}/comparison?days=${days}`;
+export const getDashboardMonth = (homeId) =>
+  `${DASHBOARD_ROUTE}/${homeId}/month`;
+export const getDashboardComparison = (homeId, days = 7) =>
+  `${DASHBOARD_ROUTE}/${homeId}/comparison?days=${days}`;
 
 // Simulation fallback routes
 export const SIMULATION_ROUTE = `${API_PREFIX}/simulation`;
-export const getSimulationLatestRoute = (homeId) => `${SIMULATION_ROUTE}/latest/${homeId}`;
-export const getSimulationHourlyRoute = (homeId, qs = "") => `${SIMULATION_ROUTE}/hourly/${homeId}${qs ? `?${qs}` : ""}`;
+export const getSimulationLatestRoute = (homeId) =>
+  `${SIMULATION_ROUTE}/latest/${homeId}`;
+export const getSimulationHourlyRoute = (homeId, qs = "") =>
+  `${SIMULATION_ROUTE}/hourly/${homeId}${qs ? `?${qs}` : ""}`;
+
+// Insights routes
+export const INSIGHTS_ROUTE = `${API_PREFIX}/insights`;
+export const getInsightsLatest = (homeId, limit = 10) =>
+  `${INSIGHTS_ROUTE}/${homeId}/latest?limit=${limit}`;
+export const postGenerateInsights = (homeId) =>
+  `${INSIGHTS_ROUTE}/generate/${homeId}`;

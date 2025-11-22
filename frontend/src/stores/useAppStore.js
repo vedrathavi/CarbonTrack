@@ -2,12 +2,14 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createAuthSlice } from "./slice/authSlice";
 import { createHomeSlice } from "./slice/homeSlice";
+import { createInsightSlice } from "./slice/insightSlice";
 
 export const useAppStore = create(
   persist(
     (...a) => ({
       ...createAuthSlice(...a),
       ...createHomeSlice(...a),
+      ...createInsightSlice(...a),
     }),
     {
       name: "app-storage",
