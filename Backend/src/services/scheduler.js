@@ -2,6 +2,7 @@ import cron from "node-cron";
 import Home from "../models/Home.js";
 import HourlyEmission from "../models/HourlyEmission.js";
 import { simulateAndSave } from "../controllers/simulationController.js";
+import insightService from "./insightService.js";
 
 function normalizeToUTCDate(d = new Date()) {
   const dt = new Date(d);
@@ -29,6 +30,12 @@ export function initScheduler() {
         for (const h of homes) {
           try {
             await simulateAndSave(h._id, date);
+            try {
+              // Generate insights after simulation for each home
+              await insightService.generateAndStoreInsights(h._id, {});
+            } catch (ie) {
+              console.error("[scheduler] generateAndStoreInsights error for home", h._id, ie?.message || ie);
+            }
           } catch (e) {
             console.error(
               "[scheduler] simulateAndSave error for home",
