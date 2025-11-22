@@ -34,7 +34,11 @@ export function initScheduler() {
               // Generate insights after simulation for each home
               await insightService.generateAndStoreInsights(h._id, {});
             } catch (ie) {
-              console.error("[scheduler] generateAndStoreInsights error for home", h._id, ie?.message || ie);
+              console.error(
+                "[scheduler] generateAndStoreInsights error for home",
+                h._id,
+                ie?.message || ie
+              );
             }
           } catch (e) {
             console.error(

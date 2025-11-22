@@ -1,5 +1,8 @@
 import express from "express";
-import { getLatest, generateForHome } from "../controllers/insightController.js";
+import {
+  getLatest,
+  generateForHome,
+} from "../controllers/insightController.js";
 import verifyToken from "../middleware/verifyToken.js";
 
 const router = express.Router();
