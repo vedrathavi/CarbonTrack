@@ -19,8 +19,10 @@ export default function ComparisonStat({ comparison }) {
   const globalWidth = (globalVal / maxValue) * 100;
   // Minimum visual width when non-zero but extremely small
   const minNonZeroWidth = 4; // percent
-  const adjustedHomeWidth = homeVal > 0 ? Math.max(homeWidth, minNonZeroWidth) : 0;
-  const adjustedGlobalWidth = globalVal > 0 ? Math.max(globalWidth, minNonZeroWidth) : 0;
+  const adjustedHomeWidth =
+    homeVal > 0 ? Math.max(homeWidth, minNonZeroWidth) : 0;
+  const adjustedGlobalWidth =
+    globalVal > 0 ? Math.max(globalWidth, minNonZeroWidth) : 0;
 
   return (
     <div className="bg-gradient-to-br from-sec-600 to-sec-700 rounded-2xl p-5 text-neu-0 relative overflow-hidden hover:scale-105 duration-300 transition-transform">
@@ -40,7 +42,9 @@ export default function ComparisonStat({ comparison }) {
                 Global Comparison
               </h3>
               <p className="text-sec-200 text-xs">How you stack up worldwide</p>
-              <p className="text-sec-300 text-[10px] mt-0.5 italic">Based on weekly average emissions</p>
+              <p className="text-sec-300 text-[10px] mt-0.5 italic">
+                Based on weekly average emissions
+              </p>
             </div>
           </div>
           {isBetter ? (
@@ -59,9 +63,18 @@ export default function ComparisonStat({ comparison }) {
                 <FiHome className="w-3 h-3 text-sec-200" />
                 <span className="text-sec-200 font-inter">Your Average</span>
               </div>
-              <span className="font-inter font-bold text-base">{homeVal} g</span>
+              <span className="font-inter font-bold text-base">
+                {homeVal} g
+              </span>
             </div>
-            <div className="w-full bg-sec-500/40 rounded-full h-2" role="progressbar" aria-valuenow={homeVal} aria-valuemin={0} aria-valuemax={maxValue} aria-label="Your average emissions relative size">
+            <div
+              className="w-full bg-sec-500/40 rounded-full h-2"
+              role="progressbar"
+              aria-valuenow={homeVal}
+              aria-valuemin={0}
+              aria-valuemax={maxValue}
+              aria-label="Your average emissions relative size"
+            >
               <div
                 className="bg-gradient-to-r from-prim-400 to-prim-500 h-2 rounded-full transition-all duration-700"
                 style={{ width: `${adjustedHomeWidth.toFixed(2)}%` }}
@@ -76,9 +89,18 @@ export default function ComparisonStat({ comparison }) {
                 <FiGlobe className="w-3 h-3 text-sec-200" />
                 <span className="text-sec-200 font-inter">Global Average</span>
               </div>
-              <span className="font-inter font-bold text-base">{globalVal} g</span>
+              <span className="font-inter font-bold text-base">
+                {globalVal} g
+              </span>
             </div>
-            <div className="w-full bg-sec-500/40 rounded-full h-2" role="progressbar" aria-valuenow={globalVal} aria-valuemin={0} aria-valuemax={maxValue} aria-label="Global average emissions relative size">
+            <div
+              className="w-full bg-sec-500/40 rounded-full h-2"
+              role="progressbar"
+              aria-valuenow={globalVal}
+              aria-valuemin={0}
+              aria-valuemax={maxValue}
+              aria-label="Global average emissions relative size"
+            >
               <div
                 className="bg-sec-300 h-2 rounded-full transition-all duration-700"
                 style={{ width: `${adjustedGlobalWidth.toFixed(2)}%` }}

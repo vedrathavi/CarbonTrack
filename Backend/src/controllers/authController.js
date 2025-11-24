@@ -78,7 +78,9 @@ export const googleLogin = async (req, res) => {
             if (typeof factor === "number") {
               home.emissionFactor = factor;
               await home.save();
-              console.log(`Updated emission factor for home: ${factor} gCO₂/kWh`);
+              console.log(
+                `Updated emission factor for home: ${factor} gCO₂/kWh`
+              );
             }
           } catch (e) {
             console.warn("Could not update emission factor:", e?.message);

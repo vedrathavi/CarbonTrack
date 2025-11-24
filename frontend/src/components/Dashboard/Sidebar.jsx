@@ -287,26 +287,28 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
                     >
                       {!collapsed ? (
                         <>
-                          {SubIcon && <SubIcon className="w-4 h-4 flex-shrink-0" />}
+                          {SubIcon && (
+                            <SubIcon className="w-4 h-4 flex-shrink-0" />
+                          )}
                           <span>{sub.label}</span>
                         </>
-                      ) : (
-                        SubIcon ? (
-                          <SubIcon className={`w-4 h-4 ${
+                      ) : SubIcon ? (
+                        <SubIcon
+                          className={`w-4 h-4 ${
                             activeSub === sub.id && openMenu === sec.key
                               ? "text-green-700"
                               : "text-green-400"
-                          }`} />
-                        ) : (
-                          <span
-                            className={`w-2 h-2 block rounded-full ${
-                              activeSub === sub.id && openMenu === sec.key
-                                ? "bg-green-700"
-                                : "bg-green-300"
-                            }`}
-                            aria-hidden
-                          />
-                        )
+                          }`}
+                        />
+                      ) : (
+                        <span
+                          className={`w-2 h-2 block rounded-full ${
+                            activeSub === sub.id && openMenu === sec.key
+                              ? "bg-green-700"
+                              : "bg-green-300"
+                          }`}
+                          aria-hidden
+                        />
                       )}
                     </button>
                   );

@@ -24,7 +24,9 @@ export const createHome = async (req, res) => {
     }
 
     if (emissionFactor === null) {
-      console.warn(`Could not determine emission factor for country: ${address?.country}`);
+      console.warn(
+        `Could not determine emission factor for country: ${address?.country}`
+      );
       return res.status(422).json({
         status: "error",
         code: "EMISSION_FACTOR_UNAVAILABLE",
@@ -44,7 +46,9 @@ export const createHome = async (req, res) => {
 
     await User.findByIdAndUpdate(req.user._id, { householdId: home._id });
 
-    console.log(`Home created successfully with emission factor: ${emissionFactor} gCO₂/kWh`);
+    console.log(
+      `Home created successfully with emission factor: ${emissionFactor} gCO₂/kWh`
+    );
     res.status(201).json({
       status: "success",
       data: {
@@ -88,7 +92,9 @@ export const joinHome = async (req, res) => {
           await home.save();
           console.log(`Backfilled emission factor: ${factor} gCO₂/kWh`);
         } else {
-          console.warn(`Could not backfill emission factor for country: ${addr.country}`);
+          console.warn(
+            `Could not backfill emission factor for country: ${addr.country}`
+          );
           return res.status(422).json({
             status: "error",
             code: "EMISSION_FACTOR_UNAVAILABLE",

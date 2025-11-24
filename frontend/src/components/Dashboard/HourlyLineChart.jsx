@@ -212,7 +212,12 @@ function HourlyLineChartInner({ hourly = null }) {
               tickLine={false}
               tick={{ fontSize: 11, fill: "#64748b" }}
               interval={2}
-              label={{ value: 'Time (Hours)', position: 'insideBottom', offset: -3, style: { fontSize: 11, fill: '#64748b' } }}
+              label={{
+                value: "Time (Hours)",
+                position: "insideBottom",
+                offset: -3,
+                style: { fontSize: 11, fill: "#64748b" },
+              }}
             />
 
             <YAxis
@@ -221,8 +226,18 @@ function HourlyLineChartInner({ hourly = null }) {
               tick={{ fontSize: 14, fill: "#64748b" }}
               width={60}
               ticks={yTicks}
-              tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value.toFixed(0)}
-              label={{ value: 'Emissions (g)', angle: -90, position: 'insideLeft', offset: -3, style: { fontSize: 11, fill: '#64748b', textAnchor: 'middle' } }}
+              tickFormatter={(value) =>
+                value >= 1000
+                  ? `${(value / 1000).toFixed(1)}k`
+                  : value.toFixed(0)
+              }
+              label={{
+                value: "Emissions (g)",
+                angle: -90,
+                position: "insideLeft",
+                offset: -3,
+                style: { fontSize: 11, fill: "#64748b", textAnchor: "middle" },
+              }}
             />
 
             <Tooltip content={<CustomTooltip />} />

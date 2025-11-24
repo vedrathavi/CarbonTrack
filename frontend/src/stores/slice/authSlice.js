@@ -15,7 +15,10 @@ export const createAuthSlice = (set, get) => ({
       const res = await apiClient.get(GET_USER_INFO);
       set({ userInfo: res.data?.user || res.data, loading: false });
     } catch (err) {
-      console.error("Failed to fetch user info:", err?.response?.data?.message || err.message);
+      console.error(
+        "Failed to fetch user info:",
+        err?.response?.data?.message || err.message
+      );
       set({
         userInfo: null,
         loading: false,
