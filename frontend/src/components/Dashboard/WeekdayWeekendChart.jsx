@@ -71,7 +71,8 @@ export default function WeekdayWeekendChart({ month }) {
             type="number"
             tick={{ fontSize: 11 }}
             axisLine={false}
-            tickFormatter={(v) => `${v}g`}
+            tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v.toFixed(0)}
+            label={{ value: 'Emissions (g)', position: 'insideBottom', offset: -3, style: { fontSize: 10, fill: '#64748b' } }}
           />
           {/* categorical axis (names) */}
           <YAxis
@@ -80,8 +81,10 @@ export default function WeekdayWeekendChart({ month }) {
             axisLine={false}
             tick={{ fontSize: 11 }}
             width={80}
+            label={{ value: 'Day Type', angle: -90, position: 'insideLeft', style: { fontSize: 10, fill: '#64748b', textAnchor: 'middle' } }}
           />
           <Tooltip
+            contentStyle={{ backgroundColor: 'rgba(235, 247, 235, 0.5)', borderRadius: '0.375rem', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
             formatter={(v) => [Number(v).toFixed(2) + " g", "Average"]}
           />
           <Bar dataKey="value" barSize={50} radius={4}>

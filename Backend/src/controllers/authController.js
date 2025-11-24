@@ -27,7 +27,6 @@ export const googleCallback = (req, res) => {
   const payload = { id: req.user._id, email: req.user.email };
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
 
-  // set httpOnly cookie then redirect to client
   res.cookie(COOKIE_NAME, token, cookieOptions);
   return res.redirect(CLIENT_URL);
 };
@@ -64,8 +63,6 @@ export const googleLogin = async (req, res) => {
       await user.save();
     }
 
-    // After successful login, if user already belongs to a home and
-    // the home's emissionFactor is missing, fetch & cache it based on address
     try {
       const home = await Home.findOne({ "members.userId": user._id });
       if (
@@ -74,7 +71,6 @@ export const googleLogin = async (req, res) => {
       ) {
         const addr = home.address || {};
         if (addr.country) {
-          // non-blocking enrichment: don't fail login if emission factor can't be found
           try {
             const factor = await getOrFetchEmissionFactor({
               country: addr.country,
@@ -82,18 +78,15 @@ export const googleLogin = async (req, res) => {
             if (typeof factor === "number") {
               home.emissionFactor = factor;
               await home.save();
+              console.log(`Updated emission factor for home: ${factor} gCO₂/kWh`);
             }
           } catch (e) {
-            console.warn(
-              "Emission factor enrichment skipped:",
-              e?.message || e
-            );
+            console.warn("Could not update emission factor:", e?.message);
           }
         }
       }
     } catch (e) {
-      // non-blocking: log and continue with login
-      console.warn("Emission factor enrichment skipped:", e?.message || e);
+      console.warn("Emission factor update skipped:", e?.message);
     }
 
     const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
@@ -112,7 +105,7 @@ export const googleLogin = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Google login error:", err);
+    console.error("Google authentication failed:", err.message);
     return res.status(500).json({ message: "Authentication error" });
   }
 };
@@ -121,7 +114,6 @@ export const authFailure = (req, res) => {
   return res.status(401).json({ ok: false, message: "Authentication failed" });
 };
 
-// logout handler - clears cookie and redirects to client
 export const logout = (req, res) => {
   res.clearCookie(COOKIE_NAME, {
     httpOnly: true,

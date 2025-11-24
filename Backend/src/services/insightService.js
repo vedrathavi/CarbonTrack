@@ -241,6 +241,8 @@ export async function generateAndStoreInsights(homeId, dashboardPayload = {}) {
     }
   }
 
+  console.log(`Successfully generated and stored ${saved.length} insights`);
+
   return saved;
 }
 

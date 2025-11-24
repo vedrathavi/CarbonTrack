@@ -52,9 +52,10 @@ export default function WeeklyBarChart({ week }) {
           margin={{ top: 10, right: 12, left: -16, bottom: 6 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis dataKey="label" tick={{ fontSize: 11 }} axisLine={false} />
-          <YAxis tick={{ fontSize: 11 }} axisLine={false} />
+          <XAxis dataKey="label" tick={{ fontSize: 11 }} axisLine={false} label={{ value: 'Days', position: 'insideBottom', offset: -3, style: { fontSize: 10, fill: '#64748b' } }} />
+          <YAxis tick={{ fontSize: 11 }} axisLine={false} tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value.toFixed(0)} label={{ value: 'Emissions (g)', angle: -90, position: 'insideLeft', style: { fontSize: 10, fill: '#64748b', textAnchor: 'middle' } }} />
           <Tooltip
+            contentStyle={{ backgroundColor: 'rgba(235, 247, 235, 0.5)', borderRadius: '0.375rem', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
             formatter={(v) => [Number(v).toFixed(2) + " kg", "Total"]}
             labelFormatter={(label, payload) => {
               if (payload && payload[0]) {

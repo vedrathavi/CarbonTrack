@@ -87,7 +87,7 @@ export default function Profile() {
         document.execCommand("copy");
         document.body.removeChild(ta);
       }
-      toast.success("🏠 Household ID copied to clipboard!");
+      toast.success("Household ID copied to clipboard!");
     } catch (err) {
       console.error("copyHouseholdId error", err);
       toast.error("Failed to copy household ID");
@@ -97,11 +97,11 @@ export default function Profile() {
   return (
     <div className="max-w-6xl mx-auto space-y-8 p-6">
       {/* Header with Household ID */}
-      <div className="bg-neu-0 rounded-2xl border border-prim-200 p-8">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-          <div className="flex items-center gap-6">
+      <div className="bg-neu-0 rounded-2xl border border-sec-200 p-4 sm:p-6 lg:p-8">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 w-full lg:w-auto">
             {avatarUrl ? (
-              <div className="w-20 h-20 rounded-xl border border-prim-200 overflow-hidden">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border border-sec-200 overflow-hidden flex-shrink-0">
                 <img
                   src={avatarUrl}
                   alt={`${displayName} avatar`}
@@ -109,7 +109,7 @@ export default function Profile() {
                 />
               </div>
             ) : (
-              <div className="w-20 h-20 rounded-xl border border-prim-200 bg-gradient-to-br from-prim-500 to-prim-400 text-neu-0 flex items-center justify-center text-2xl font-instru">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border border-sec-200 bg-gradient-to-br from-sec-500 to-sec-400 text-neu-0 flex items-center justify-center text-xl sm:text-2xl font-instru flex-shrink-0">
                 {String(displayName)
                   .split(" ")
                   .map((n) => n[0])
@@ -117,17 +117,17 @@ export default function Profile() {
                   .join("")}
               </div>
             )}
-            <div>
-              <h1 className="text-3xl font-instru text-sec-900 mb-2">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl sm:text-3xl font-instru text-sec-900 mb-2 break-words">
                 {displayName}
               </h1>
-              <div className="flex items-center gap-2 text-sec-700 font-inter">
-                <FiMail className="w-4 h-4" />
-                <span>{user?.email || "-"}</span>
+              <div className="flex items-center gap-2 text-sec-700 font-inter text-sm sm:text-base break-all">
+                <FiMail className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                <span className="truncate">{user?.email || "-"}</span>
               </div>
               {user?.createdAt && (
-                <div className="flex items-center gap-2 text-sec-600 text-sm font-inter mt-2">
-                  <FiCalendar className="w-3 h-3" />
+                <div className="flex items-center gap-2 text-sec-600 text-xs sm:text-sm font-inter mt-2">
+                  <FiCalendar className="w-3 h-3 flex-shrink-0" />
                   <span>Joined {formatDate(user.createdAt)}</span>
                 </div>
               )}
@@ -135,33 +135,33 @@ export default function Profile() {
           </div>
 
           {/* Household ID - Featured Section */}
-          <div className="bg-prim-50 border border-prim-300 rounded-xl p-6 min-w-[280px]">
+          <div className="bg-sec-50 border border-sec-300 rounded-xl p-4 sm:p-6 w-full lg:w-auto lg:min-w-[280px]">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 bg-prim-100 rounded-lg flex items-center justify-center border border-prim-200">
-                <FiHome className="w-5 h-5 text-prim-600" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-sec-100 rounded-lg flex items-center justify-center border border-sec-200 flex-shrink-0">
+                <FiHome className="w-4 h-4 sm:w-5 sm:h-5 text-sec-600" />
               </div>
-              <div>
-                <div className="text-sm font-inter font-medium text-sec-700">
+              <div className="flex-1 min-w-0">
+                <div className="text-xs sm:text-sm font-inter font-medium text-sec-700">
                   Household ID
                 </div>
-                <div className="text-xs text-sec-600">
+                <div className="text-[10px] sm:text-xs text-sec-600">
                   Share to invite members
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="flex-1 bg-neu-0 border border-prim-200 rounded-lg p-3">
-                <div className="font-mono text-base text-sec-900 tracking-wide text-center">
+              <div className="flex-1 bg-neu-0 border border-sec-200 rounded-lg p-2 sm:p-3 min-w-0">
+                <div className="font-mono text-sm sm:text-base text-sec-900 tracking-wide text-center break-all">
                   {resolvedHome?.homeCode || "NO-ID-AVAILABLE"}
                 </div>
               </div>
               <button
                 onClick={copyHouseholdId}
-                className="w-10 h-10 bg-prim-500 border border-prim-600 rounded-lg flex items-center justify-center hover:bg-prim-600 transition-colors"
+                className="w-9 h-9 sm:w-10 sm:h-10 bg-sec-500 border border-sec-600 rounded-lg flex items-center justify-center hover:bg-sec-600 transition-colors flex-shrink-0"
                 title="Copy Household ID"
               >
-                <FiCopy className="w-4 h-4 text-prim-100" />
+                <FiCopy className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sec-100" />
               </button>
             </div>
           </div>
@@ -172,10 +172,10 @@ export default function Profile() {
         {/* Left Column - Personal Info & Household */}
         <div className="xl:col-span-2 space-y-6">
           {/* Personal Information */}
-          <div className="bg-neu-0 rounded-2xl border border-prim-200 p-6">
+          <div className="bg-neu-0 rounded-2xl border border-sec-200 p-6">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 bg-prim-100 rounded-lg flex items-center justify-center border border-prim-200">
-                <FiUser className="w-4 h-4 text-prim-600" />
+              <div className="w-8 h-8 bg-sec-100 rounded-lg flex items-center justify-center border border-sec-200">
+                <FiUser className="w-4 h-4 text-sec-600" />
               </div>
               <h2 className="text-xl font-instru text-sec-900">
                 Personal Information
@@ -187,7 +187,7 @@ export default function Profile() {
                 <label className="text-sm font-inter font-medium text-sec-600">
                   First Name
                 </label>
-                <div className="p-3 bg-prim-50 border border-prim-200 rounded-lg text-sec-900 font-inter">
+                <div className="p-3 bg-sec-50 border border-sec-200 rounded-lg text-sec-900 font-inter">
                   {firstName}
                 </div>
               </div>
@@ -195,7 +195,7 @@ export default function Profile() {
                 <label className="text-sm font-inter font-medium text-sec-600">
                   Last Name
                 </label>
-                <div className="p-3 bg-prim-50 border border-prim-200 rounded-lg text-sec-900 font-inter">
+                <div className="p-3 bg-sec-50 border border-sec-200 rounded-lg text-sec-900 font-inter">
                   {lastName}
                 </div>
               </div>
@@ -203,8 +203,8 @@ export default function Profile() {
                 <label className="text-sm font-inter font-medium text-sec-600">
                   Email Address
                 </label>
-                <div className="p-3 bg-prim-50 border border-prim-200 rounded-lg text-sec-900 font-inter flex items-center gap-2">
-                  <FiMail className="w-4 h-4 text-prim-600" />
+                <div className="p-3 bg-sec-50 border border-sec-200 rounded-lg text-sec-900 font-inter flex items-center gap-2">
+                  <FiMail className="w-4 h-4 text-sec-600" />
                   {user?.email || "-"}
                 </div>
               </div>
@@ -212,7 +212,7 @@ export default function Profile() {
           </div>
 
           {/* Household Members */}
-          <div className="bg-neu-0 rounded-2xl border border-prim-200 p-6">
+          <div className="bg-neu-0 rounded-2xl border border-sec-200 p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-8 bg-sec-100 rounded-lg flex items-center justify-center border border-sec-200">
                 <FiUsers className="w-4 h-4 text-sec-600" />
@@ -230,7 +230,7 @@ export default function Profile() {
         {/* Right Column - Home Details & Actions */}
         <div className="space-y-6">
           {/* Home Details */}
-          <div className="bg-neu-0 rounded-2xl border border-prim-200 p-6">
+          <div className="bg-neu-0 rounded-2xl border border-sec-200 p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-8 bg-sec-100 rounded-lg flex items-center justify-center border border-sec-200">
                 <FiHome className="w-4 h-4 text-sec-600" />
@@ -242,15 +242,15 @@ export default function Profile() {
               {/* Location */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-prim-100 rounded flex items-center justify-center border border-prim-200">
-                    <FiMapPin className="w-3 h-3 text-prim-600" />
+                  <div className="w-6 h-6 bg-sec-100 rounded flex items-center justify-center border border-sec-200">
+                    <FiMapPin className="w-3 h-3 text-sec-600" />
                   </div>
                   <h3 className="font-inter font-medium text-sec-800">
                     Location
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 gap-2">
-                  <div className="p-2 bg-prim-50 border border-prim-200 rounded-lg">
+                  <div className="p-2 bg-sec-50 border border-sec-200 rounded-lg">
                     <div className="text-xs font-inter font-medium text-sec-600">
                       City
                     </div>
@@ -258,7 +258,7 @@ export default function Profile() {
                       {resolvedHome?.address?.city || "-"}
                     </div>
                   </div>
-                  <div className="p-2 bg-prim-50 border border-prim-200 rounded-lg">
+                  <div className="p-2 bg-sec-50 border border-sec-200 rounded-lg">
                     <div className="text-xs font-inter font-medium text-sec-600">
                       State/Region
                     </div>
@@ -266,7 +266,7 @@ export default function Profile() {
                       {resolvedHome?.address?.state || "-"}
                     </div>
                   </div>
-                  <div className="p-2 bg-prim-50 border border-prim-200 rounded-lg">
+                  <div className="p-2 bg-sec-50 border border-sec-200 rounded-lg">
                     <div className="text-xs font-inter font-medium text-sec-600">
                       Country
                     </div>
@@ -309,88 +309,44 @@ export default function Profile() {
 
               {/* Appliances */}
               {resolvedHome?.appliances &&
-                Object.keys(resolvedHome.appliances).length > 0 && (
+                Object.entries(resolvedHome.appliances).filter(
+                  ([, count]) => count > 0
+                ).length > 0 && (
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-prim-100 rounded flex items-center justify-center border border-prim-200">
-                        <FiZap className="w-3 h-3 text-prim-600" />
+                      <div className="w-6 h-6 bg-sec-100 rounded flex items-center justify-center border border-sec-200">
+                        <FiZap className="w-3 h-3 text-sec-600" />
                       </div>
                       <h3 className="font-inter font-medium text-sec-800">
                         Appliances
                       </h3>
                     </div>
                     <div className="grid grid-cols-1 gap-2">
-                      {Object.entries(resolvedHome.appliances).map(
-                        ([appliance, count]) => (
+                      {Object.entries(resolvedHome.appliances)
+                        .filter(([, count]) => count > 0)
+                        .map(([appliance, count]) => (
                           <div
                             key={appliance}
-                            className="p-2 bg-prim-50 border border-prim-200 rounded-lg hover:border-prim-300 transition-colors"
+                            className="p-2 bg-sec-50 border border-sec-200 rounded-lg hover:border-sec-300 transition-colors"
                           >
                             <div className="flex justify-between items-center">
                               <span className="font-inter text-sec-800 capitalize text-sm">
                                 {appliance.replace(/([A-Z])/g, " $1").trim()}
                               </span>
-                              <span className="font-instru text-prim-600">
+                              <span className="font-instru text-sec-600">
                                 {count}
                               </span>
                             </div>
                           </div>
-                        )
-                      )}
+                        ))}
                     </div>
                   </div>
                 )}
             </div>
           </div>
 
-          {/* Quick Actions */}
-          <div className="bg-neu-0 rounded-2xl border border-prim-200 p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 bg-sec-100 rounded-lg flex items-center justify-center border border-sec-200">
-                <FiShare2 className="w-4 h-4 text-sec-600" />
-              </div>
-              <h2 className="text-xl font-instru text-sec-900">
-                Quick Actions
-              </h2>
-            </div>
-
-            <div className="space-y-3">
-              <button
-                onClick={copyHouseholdId}
-                className="w-full p-3 bg-prim-50 border border-prim-200 rounded-lg hover:bg-prim-100 hover:border-prim-300 transition-all duration-200 text-left"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-prim-100 rounded flex items-center justify-center border border-prim-200">
-                    <FiCopy className="w-4 h-4 text-prim-600" />
-                  </div>
-                  <div>
-                    <div className="font-inter font-medium text-sec-800">
-                      Copy Household ID
-                    </div>
-                    <div className="text-xs text-sec-600">
-                      Share with family members
-                    </div>
-                  </div>
-                </div>
-              </button>
-
-              <button className="w-full p-3 bg-sec-50 border border-sec-200 rounded-lg hover:bg-sec-100 hover:border-sec-300 transition-all duration-200 text-left">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-sec-100 rounded flex items-center justify-center border border-sec-200">
-                    <FiUser className="w-4 h-4 text-sec-600" />
-                  </div>
-                  <div>
-                    <div className="font-inter font-medium text-sec-800">
-                      Edit Profile
-                    </div>
-                    <div className="text-xs text-sec-600">
-                      Update personal details
-                    </div>
-                  </div>
-                </div>
-              </button>
-            </div>
-          </div>
+          
+        
         </div>
       </div>
     </div>

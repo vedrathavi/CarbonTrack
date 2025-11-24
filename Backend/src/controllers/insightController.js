@@ -76,10 +76,11 @@ export async function generateForHome(req, res) {
       resolved,
       payload
     );
+    console.log(`Generated ${saved.length} insights for home ${homeId}`);
     return res.json({ ok: true, saved });
   } catch (err) {
-    console.error("insight.generateForHome error:", err);
-    return res.status(500).json({ error: err.message || "failed" });
+    console.error("Failed to generate insights:", err.message);
+    return res.status(500).json({ error: err.message || "Failed to generate insights" });
   }
 }
 

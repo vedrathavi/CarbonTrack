@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
-import { FiMenu } from "react-icons/fi";
+import { FiMenu, FiMapPin } from "react-icons/fi";
+import { Zap } from "lucide-react";
 import useAppStore from "@/stores/useAppStore";
 
 export default function DashboardLayout({ children }) {
@@ -9,8 +10,30 @@ export default function DashboardLayout({ children }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileClosing, setMobileClosing] = useState(false);
   const userInfo = useAppStore((s) => s.userInfo) || {};
+  const home = useAppStore((s) => s.home);
+  const resolvedHome = home?.data?.home ?? home?.home ?? home ?? null;
   const firstName =
     userInfo?.firstName || (userInfo?.name || "").split(" ")[0] || "User";
+  
+  const getCountryName = (countryVal) => {
+    if (!countryVal) return null;
+    const code = String(countryVal).trim();
+    if (/^[A-Za-z]{2}$/.test(code)) {
+      try {
+        const dn = new Intl.DisplayNames(["en"], { type: "region" });
+        return dn.of(code.toUpperCase()) || code;
+      } catch {
+        return code;
+      }
+    }
+    return countryVal;
+  };
+  
+  const formatEmissionFactor = (factor) => {
+    if (!factor) return null;
+    const num = parseFloat(factor);
+    return isNaN(num) ? null : `${num.toFixed(2)} gCO₂/kWh`;
+  };
   const greeting = (() => {
     const h = new Date().getHours();
     if (h < 12) return "Good Morning";
@@ -91,11 +114,31 @@ export default function DashboardLayout({ children }) {
       >
         <div className="mx-3 md:mx-8 ">
           {/* header area (inside scrollable content) */}
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="text-2xl md:text-3xl text-sec-700 font-inter font-semibold tracking-tighter flex md:px-4 items-center gap-2 px-10">
               <span className="truncate">
                 {greeting}, <span className="font-semibold">{firstName}</span>!
               </span>
+            </div>
+            
+            {/* Emission Factor & Country */}
+            <div className="flex items-center gap-3 px-10 sm:px-0">
+              {formatEmissionFactor(resolvedHome?.emissionFactor) && (
+                <div className="flex items-center gap-2 bg-prim-50 border border-prim-200 rounded-lg px-3 py-1.5">
+                  <Zap className="w-4 h-4 text-prim-600 flex-shrink-0" />
+                  <span className="text-xs font-inter font-medium text-sec-700 whitespace-nowrap">
+                    {formatEmissionFactor(resolvedHome.emissionFactor)}
+                  </span>
+                </div>
+              )}
+              {getCountryName(resolvedHome?.address?.country) && (
+                <div className="flex items-center gap-2 bg-sec-50 border border-sec-200 rounded-lg px-3 py-1.5">
+                  <FiMapPin className="w-4 h-4 text-sec-600 flex-shrink-0" />
+                  <span className="text-xs font-inter font-medium text-sec-700 whitespace-nowrap">
+                    {getCountryName(resolvedHome.address.country)}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 

@@ -7,7 +7,6 @@ import {
 } from "../../utils/constants";
 
 export const createHomeSlice = (set, get) => ({
-  // state
   home: null,
   homeLoading: false,
   homeError: null,
@@ -16,7 +15,6 @@ export const createHomeSlice = (set, get) => ({
   statsLoading: false,
   statsError: null,
 
-  // setters
   setHome: (home) => set({ home, homeError: null }),
   clearHome: () =>
     set({
@@ -28,12 +26,12 @@ export const createHomeSlice = (set, get) => ({
       statsError: null,
     }),
 
-  // actions
   fetchMyHome: async () => {
     set({ homeLoading: true, homeError: null });
     try {
       const res = await apiClient.get(GET_MY_HOME_ROUTE);
       const home = res.data?.home ?? res.data ?? null;
+      console.log("Home data loaded successfully");
       set({ home, homeLoading: false });
       return home;
     } catch (err) {
@@ -43,6 +41,7 @@ export const createHomeSlice = (set, get) => ({
         return null;
       }
       const message = err?.response?.data?.message || "Failed to fetch home";
+      console.error("Could not load home:", message);
       set({ home: null, homeLoading: false, homeError: message });
       return null;
     }

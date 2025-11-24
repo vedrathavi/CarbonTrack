@@ -64,7 +64,7 @@ export default function Landing() {
         />
       </div>
 
-      {/* 🏠 Hero */}
+      {/* Hero */}
       <header className="w-full text-center py-16 px-6 md:px-10 flex flex-col items-center relative z-10">
         <h1
           initial={{ opacity: 0, y: -20 }}

@@ -96,7 +96,7 @@ function HourlyLineChartInner({ hourly = null }) {
     if (active && payload && payload.length) {
       const isCurrent = payload[0]?.payload?.hour === currentHour;
       return (
-        <div className=" p-4 shadow-lg">
+        <div className=" p-4 shadow-lg bg-prim-100/50 rounded-md">
           <div className="flex items-center gap-2 mb-2">
             <div
               className={`w-3 h-3 rounded-full ${
@@ -191,7 +191,7 @@ function HourlyLineChartInner({ hourly = null }) {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}
-            margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
+            margin={{ top: 10, right: 20, left: 12, bottom: 10 }}
           >
             <defs>
               <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
@@ -212,6 +212,7 @@ function HourlyLineChartInner({ hourly = null }) {
               tickLine={false}
               tick={{ fontSize: 11, fill: "#64748b" }}
               interval={2}
+              label={{ value: 'Time (Hours)', position: 'insideBottom', offset: -3, style: { fontSize: 11, fill: '#64748b' } }}
             />
 
             <YAxis
@@ -220,7 +221,8 @@ function HourlyLineChartInner({ hourly = null }) {
               tick={{ fontSize: 14, fill: "#64748b" }}
               width={60}
               ticks={yTicks}
-              tickFormatter={(value) => `${(value / 1000).toFixed(2)} kg`}
+              tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value.toFixed(0)}
+              label={{ value: 'Emissions (g)', angle: -90, position: 'insideLeft', offset: -3, style: { fontSize: 11, fill: '#64748b', textAnchor: 'middle' } }}
             />
 
             <Tooltip content={<CustomTooltip />} />
@@ -243,7 +245,6 @@ function HourlyLineChartInner({ hourly = null }) {
               dot={(dotProps) => {
                 const { cx, cy, payload } = dotProps;
                 if (payload?.hour === currentHour) {
-                  // Render a group translated to the point, with an animated outer circle and inner filled circle
                   return (
                     <g transform={`translate(${cx},${cy})`}>
                       <g>
@@ -287,7 +288,6 @@ function HourlyLineChartInner({ hourly = null }) {
                     </g>
                   );
                 }
-                // default small dot
                 return (
                   <circle
                     cx={cx}

@@ -2,15 +2,10 @@ import Home from "../models/Home.js";
 import User from "../models/User.js";
 import { getOrFetchEmissionFactor } from "../services/emissionFactorService.js";
 
-// @desc    Create a new home
-// @route   POST /api/homes
-// @access  Private
 export const createHome = async (req, res) => {
   try {
-    // Do not accept a 'name' field — the Home model does not include a name
     const { address, totalRooms, appliances } = req.body;
 
-    // Prevent a user who already belongs to a home from creating another
     const existingHome = await Home.findOne({ "members.userId": req.user._id });
     if (existingHome) {
       return res.status(409).json({
@@ -21,7 +16,6 @@ export const createHome = async (req, res) => {
       });
     }
 
-    // Fetch emission factor for the address (country-only lookup in service)
     let emissionFactor = null;
     if (address && address.country) {
       emissionFactor = await getOrFetchEmissionFactor({
@@ -29,8 +23,8 @@ export const createHome = async (req, res) => {
       });
     }
 
-    // If we couldn't determine an emission factor, return a clear 422 so frontend can prompt user
     if (emissionFactor === null) {
+      console.warn(`Could not determine emission factor for country: ${address?.country}`);
       return res.status(422).json({
         status: "error",
         code: "EMISSION_FACTOR_UNAVAILABLE",
@@ -39,7 +33,6 @@ export const createHome = async (req, res) => {
       });
     }
 
-    // Create new home with current user as creator
     const home = await Home.create({
       address,
       totalRooms,
@@ -49,9 +42,9 @@ export const createHome = async (req, res) => {
       members: [{ userId: req.user._id, role: "admin" }],
     });
 
-    // Update user's householdId
     await User.findByIdAndUpdate(req.user._id, { householdId: home._id });
 
+    console.log(`Home created successfully with emission factor: ${emissionFactor} gCO₂/kWh`);
     res.status(201).json({
       status: "success",
       data: {
@@ -68,9 +61,6 @@ export const createHome = async (req, res) => {
   }
 };
 
-// @desc    Join a home using home code
-// @route   POST /api/homes/join
-// @access  Private
 export const joinHome = async (req, res) => {
   try {
     const { homeCode } = req.body;
@@ -84,7 +74,6 @@ export const joinHome = async (req, res) => {
 
     const home = await Home.joinByHomeCode(homeCode, req.user._id);
 
-    // Backfill emissionFactor if missing (for older homes)
     if (
       home &&
       (home.emissionFactor === null || home.emissionFactor === undefined)
@@ -97,8 +86,9 @@ export const joinHome = async (req, res) => {
         if (typeof factor === "number") {
           home.emissionFactor = factor;
           await home.save();
+          console.log(`Backfilled emission factor: ${factor} gCO₂/kWh`);
         } else {
-          // If we couldn't backfill, return a 422 so the client can handle it explicitly
+          console.warn(`Could not backfill emission factor for country: ${addr.country}`);
           return res.status(422).json({
             status: "error",
             code: "EMISSION_FACTOR_UNAVAILABLE",
@@ -109,8 +99,8 @@ export const joinHome = async (req, res) => {
       }
     }
 
-    // Update user's householdId
     await User.findByIdAndUpdate(req.user._id, { householdId: home._id });
+    console.log(`User ${req.user.email} joined home with code: ${homeCode}`);
 
     res.status(200).json({
       status: "success",
@@ -128,9 +118,6 @@ export const joinHome = async (req, res) => {
   }
 };
 
-// @desc    Get current user's home
-// @route   GET /api/homes/me
-// @access  Private
 export const getMyHome = async (req, res) => {
   try {
     const home = await Home.findOne({
@@ -159,9 +146,6 @@ export const getMyHome = async (req, res) => {
   }
 };
 
-// @desc    Update home details
-// @route   PATCH /api/homes
-// @access  Private (Admin only)
 export const updateHome = async (req, res) => {
   try {
     const home = await Home.findOne({
@@ -175,7 +159,6 @@ export const updateHome = async (req, res) => {
       });
     }
 
-    // Check if user is admin
     if (!home.isAdmin(req.user._id)) {
       return res.status(403).json({
         status: "error",
@@ -183,10 +166,8 @@ export const updateHome = async (req, res) => {
       });
     }
 
-    // Fields that can be updated (no 'name' field in model)
     const allowedUpdates = ["address", "totalRooms", "appliances"];
 
-    // Filter out unwanted fields
     const updates = Object.keys(req.body)
       .filter((key) => allowedUpdates.includes(key))
       .reduce((obj, key) => {
@@ -194,9 +175,9 @@ export const updateHome = async (req, res) => {
         return obj;
       }, {});
 
-    // Update home
     Object.assign(home, updates);
     await home.save();
+    console.log(`Home updated by ${req.user.email}`);
 
     res.status(200).json({
       status: "success",
@@ -214,9 +195,6 @@ export const updateHome = async (req, res) => {
   }
 };
 
-// @desc    Get home statistics
-// @route   GET /api/homes/stats
-// @access  Private
 export const getHomeStats = async (req, res) => {
   try {
     const home = await Home.findOne({
@@ -230,7 +208,6 @@ export const getHomeStats = async (req, res) => {
       });
     }
 
-    // Calculate basic statistics
     const stats = {
       totalMembers: home.members.length,
       totalAppliances: Object.values(home.appliances).reduce(
@@ -255,12 +232,8 @@ export const getHomeStats = async (req, res) => {
   }
 };
 
-// @desc    Get members of the current user's home with user info and roles
-// @route   GET /api/homes/members
-// @access  Private
 export const getHomeMembers = async (req, res) => {
   try {
-    // Find the home that contains the requesting user and populate member user docs
     const home = await Home.findOne({ "members.userId": req.user._id })
       .populate("members.userId", "name email profilePic")
       .lean();
@@ -272,7 +245,6 @@ export const getHomeMembers = async (req, res) => {
       });
     }
 
-    // Map members to include role and populated user info. Filter out any empty entries.
     const members = (home.members || [])
       .filter((m) => m && m.userId)
       .map((m) => ({ role: m.role, user: m.userId }));

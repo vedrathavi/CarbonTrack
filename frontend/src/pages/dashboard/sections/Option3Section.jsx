@@ -30,7 +30,6 @@ import {
   Power,
   Eye,
   Brain,
- 
   Snowflake,
   Cpu,
   Scale,
@@ -41,6 +40,14 @@ import {
   Smartphone,
   SunIcon,
   Gauge,
+  CookingPot,
+  Refrigerator,
+  Flame,
+  Lightbulb as LightbulbIcon,
+  HelpCircle,
+  Ghost,
+  ArrowUpCircle,
+  Wind as WindIcon,
 } from "lucide-react";
 
 // Constants outside component to avoid recreation
@@ -48,10 +55,8 @@ const TAG_ICONS = {
   // Original tags
   suggestion: Lightbulb,
   appliance: Home,
- 
   heating: Thermometer,
   maintenance: Shield,
-  
   water: Droplets,
   energy: Battery,
   solar: Sun,
@@ -72,17 +77,31 @@ const TAG_ICONS = {
   equivalence: Scale,
   fan: Fan,
   filter: Filter,
-
   fun: Zap,
-  kitchen: Home,
-  
+  kitchen: CookingPot,
   night: Moon,
   passive: Sofa,
   "smart home": Smartphone,
   summer: SunIcon,
   technology: Cpu,
   thermostat: Gauge,
+  
+  // Additional tags from image
   AC: AirVent,
+  LEDs: LightbulbIcon,
+  appliances: Home,
+  drafts: WindIcon,
+  fridge: Refrigerator,
+  "hot water": Flame,
+  insulation: Shield,
+  lighting: LightbulbIcon,
+  myth: HelpCircle,
+  "phantom load": Ghost,
+  upgrade: ArrowUpCircle,
+  ventilation: Fan,
+  "water heater": Flame,
+  windows: Wind,
+  
   default: Info,
 };
 
@@ -90,9 +109,7 @@ const TAG_COLORS = {
   // Original tags
   suggestion: "bg-sec-50/50 border-sec-200 text-sec-700",
   appliance: "bg-sec-50/50 border-sec-200 text-sec-700",
-  
   heating: "bg-orange-50/50 border-orange-200 text-orange-700",
-  
   fun: "bg-pink-50/50 border-pink-200 text-pink-700",
   water: "bg-cyan-50/50 border-cyan-200 text-cyan-700",
   energy: "bg-amber-50/50 border-amber-200 text-amber-700",
@@ -115,7 +132,6 @@ const TAG_COLORS = {
   fan: "bg-blue-50/50 border-blue-200 text-blue-700",
   filter: "bg-amber-50/50 border-amber-200 text-amber-700",
   footprint: "bg-green-50/50 border-green-200 text-green-700",
-
   kitchen: "bg-red-50/50 border-red-200 text-red-700",
   maintenance: "bg-yellow-50/50 border-yellow-200 text-yellow-700",
   night: "bg-indigo-50/50 border-indigo-200 text-indigo-700",
@@ -125,6 +141,22 @@ const TAG_COLORS = {
   technology: "bg-blue-50/50 border-blue-200 text-blue-700",
   thermostat: "bg-red-50/50 border-red-200 text-red-700",
   windows: "bg-cyan-50/50 border-cyan-200 text-cyan-700",
+  
+  // Additional tags from image
+  AC: "bg-cyan-50/50 border-cyan-200 text-cyan-700",
+  LEDs: "bg-yellow-50/50 border-yellow-200 text-yellow-700",
+  appliances: "bg-sec-50/50 border-sec-200 text-sec-700",
+  drafts: "bg-slate-50/50 border-slate-200 text-slate-700",
+  fridge: "bg-blue-50/50 border-blue-200 text-blue-700",
+  "hot water": "bg-red-50/50 border-red-200 text-red-700",
+  insulation: "bg-gray-50/50 border-gray-200 text-gray-700",
+  lighting: "bg-yellow-50/50 border-yellow-200 text-yellow-700",
+  myth: "bg-slate-50/50 border-slate-200 text-slate-700",
+  "phantom load": "bg-violet-50/50 border-violet-200 text-violet-700",
+  upgrade: "bg-green-50/50 border-green-200 text-green-700",
+  ventilation: "bg-sky-50/50 border-sky-200 text-sky-700",
+  "water heater": "bg-orange-50/50 border-orange-200 text-orange-700",
+  
   default: "bg-gray-50/50 border-gray-200 text-gray-700",
 };
 
@@ -243,7 +275,6 @@ export default function InsightsSection() {
   const [showFilters, setShowFilters] = useState(false);
   const [showAllTags, setShowAllTags] = useState(false);
 
-  // Memoized derived data
   const allTags = useMemo(() => {
     if (!insights) return [];
     const tagSet = new Set();

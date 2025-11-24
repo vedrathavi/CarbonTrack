@@ -13,7 +13,20 @@ import {
   FiChevronRight,
   FiLogOut,
   FiStar,
+  FiActivity,
+  FiBarChart2,
+  FiTrendingUp,
+  FiTarget,
+  FiAlertCircle,
+  FiCloud,
+  FiZap,
+  FiGlobe,
+  FiCheckCircle,
+  FiLayers,
+  FiHelpCircle,
+  FiHeart,
 } from "react-icons/fi";
+import { HiLightBulb } from "react-icons/hi";
 import {
   Dialog,
   DialogTrigger,
@@ -51,10 +64,10 @@ const sections = [
     label: "Dashboard",
     icon: "dashboard",
     subs: [
-      { id: "sub-1", label: "Overview" },
-      { id: "sub-2", label: "Analytics" },
-      { id: "sub-3", label: "Trends" },
-      { id: "sub-4", label: "Insights" },
+      { id: "sub-1", label: "Overview", icon: FiLayers },
+      { id: "sub-2", label: "Analytics", icon: FiBarChart2 },
+      { id: "sub-3", label: "Trends", icon: FiTrendingUp },
+      { id: "sub-4", label: "Insights", icon: HiLightBulb },
     ],
   },
   {
@@ -62,14 +75,14 @@ const sections = [
     label: "Education",
     icon: "education",
     subs: [
-      { id: "sub-hero", label: "Carbon Footprint" },
-      { id: "sub-what", label: "What is Carbon Footprint" },
-      { id: "sub-why", label: "Why It Matters" },
-      { id: "sub-sources", label: "Emission Sources" },
-      { id: "sub-how", label: "How CarbonTrack Helps" },
-      { id: "sub-reduce", label: "Reduction Strategies" },
-      { id: "sub-global", label: "Global Impact" },
-      { id: "sub-cta", label: "Get Started" },
+      { id: "sub-hero", label: "Carbon Footprint", icon: FiTarget },
+      { id: "sub-what", label: "What is Carbon Footprint", icon: FiHelpCircle },
+      { id: "sub-why", label: "Why It Matters", icon: FiHeart },
+      { id: "sub-sources", label: "Emission Sources", icon: FiCloud },
+      { id: "sub-how", label: "How CarbonTrack Helps", icon: FiZap },
+      { id: "sub-reduce", label: "Reduction Strategies", icon: FiActivity },
+      { id: "sub-global", label: "Global Impact", icon: FiGlobe },
+      { id: "sub-cta", label: "Get Started", icon: FiCheckCircle },
     ],
   },
   {
@@ -257,6 +270,7 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
                 } ${collapsed ? "pl-2" : "pl-10"}`}
               >
                 {sec.subs?.map((sub) => {
+                  const SubIcon = sub.icon;
                   return (
                     <button
                       key={sub.id}
@@ -264,24 +278,35 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
                       className={`block w-full ${
                         collapsed
                           ? "flex items-center justify-center px-0 py-1"
-                          : "text-left px-2 py-2"
-                      } rounded-md text-sm ${
+                          : "flex items-center gap-2 text-left px-2 py-2"
+                      } rounded-md text-sm transition-colors ${
                         activeSub === sub.id && openMenu === sec.key
                           ? "bg-green-100 text-green-800"
                           : "text-gray-600 hover:bg-gray-50"
                       }`}
                     >
                       {!collapsed ? (
-                        sub.label
+                        <>
+                          {SubIcon && <SubIcon className="w-4 h-4 flex-shrink-0" />}
+                          <span>{sub.label}</span>
+                        </>
                       ) : (
-                        <span
-                          className={`w-2 h-2 block rounded-full ${
+                        SubIcon ? (
+                          <SubIcon className={`w-4 h-4 ${
                             activeSub === sub.id && openMenu === sec.key
-                              ? "bg-green-700"
-                              : "bg-green-300"
-                          }`}
-                          aria-hidden
-                        />
+                              ? "text-green-700"
+                              : "text-green-400"
+                          }`} />
+                        ) : (
+                          <span
+                            className={`w-2 h-2 block rounded-full ${
+                              activeSub === sub.id && openMenu === sec.key
+                                ? "bg-green-700"
+                                : "bg-green-300"
+                            }`}
+                            aria-hidden
+                          />
+                        )
                       )}
                     </button>
                   );

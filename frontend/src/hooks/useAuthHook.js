@@ -12,17 +12,15 @@ const useAuth = () => {
       try {
         const response = await apiClient.get(GET_USER_INFO);
         let user = response.data;
-        // If backend returns { user: { ... } }, extract user
         if (user && user.user) user = user.user;
         if (response.status === 200 && user && user._id) {
           setUser(user);
-          console.log("User data fetched:", user);
+          console.log("Authenticated as:", user.email);
           try {
             if (typeof fetchMyHome === "function")
               fetchMyHome().catch(() => {});
           } catch (e) {
-            console.warn("Error fetching home data:", e);
-            /* ignore */
+            console.error("Failed to load home:", e);
           }
         } else {
           logout();
@@ -42,8 +40,7 @@ const useAuth = () => {
       try {
         if (typeof fetchMyHome === "function") fetchMyHome().catch(() => {});
       } catch (e) {
-        console.warn("Error fetching home data:", e);
-        /* ignore */
+        console.error("Failed to load home:", e);
       }
     }
 

@@ -44,7 +44,7 @@ const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     return (
-      <div className=" rounded-xl p-3 shadow-lg">
+      <div className=" bg-prim-100/50 rounded-xl p-3 shadow-lg">
         <div className="flex items-center gap-2 mb-2">
           <div
             className="w-3 h-3 rounded-full"
@@ -58,7 +58,7 @@ const CustomTooltip = ({ active, payload }) => {
           <p className="text-lg font-instru text-prim-600">
             {data.value.toFixed(1)} kg
           </p>
-          <p className="text-sm text-sec-600 font-inter">
+          <p className="text-sm text-sec-800 font-inter">
             {data.payload.percentage.toFixed(1)}% of total
           </p>
         </div>
@@ -122,7 +122,7 @@ export default function AppliancePieChart({ applianceTotals = {} }) {
       </div>
 
       {/* Chart Container */}
-      <div className="h-70">
+      <div className="h-65">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
