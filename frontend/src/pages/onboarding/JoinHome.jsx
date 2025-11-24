@@ -99,7 +99,7 @@ export default function JoinHome() {
                   placeholder="Ex. 1H342BB"
                   value={homeCode}
                   onChange={(e) => setHomeCode(e.target.value)}
-                  className="relative z-10 h-12 text-base font-inter border-2 bg-prim-100 border-gray-800 rounded-md uppercase"
+                  className="relative z-10 h-12 text-base font-inter border-2 bg-prim-100 border-gray-800 rounded-md"
                   disabled={loading}
                 />
               </div>

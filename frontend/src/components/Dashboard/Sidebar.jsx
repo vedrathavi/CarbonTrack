@@ -75,17 +75,6 @@ const sections = [
     key: "insights",
     label: "Insights",
     icon: "star",
-    
-  },
-  {
-    key: "option4",
-    label: "Option 4",
-    icon: "option",
-    subs: [
-      { id: "sub-1", label: "Sub-option 1" },
-      { id: "sub-2", label: "Sub-option 2" },
-      { id: "sub-3", label: "Sub-option 3" },
-    ],
   },
 ];
 
@@ -164,7 +153,7 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
 
   return (
     <aside
-      className={`flex flex-col bg-neu-0  transition-all duration-300 ease-in-out ${
+      className={`group flex flex-col bg-neu-0  transition-all duration-300 ease-in-out ${
         collapsed ? "w-20" : "w-64"
       } h-screen overflow-hidden`}
     >
@@ -381,7 +370,9 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
               <div className="btn-3d-wrapper">
                 <div className="btn-3d-offset" aria-hidden />
                 <DialogClose asChild>
-                  <button className="btn-3d btn-3d--light">Cancel</button>
+                  <button className="btn-3d btn-3d--light !w-full flex items-center justify-center">
+                    Cancel
+                  </button>
                 </DialogClose>
               </div>
 
@@ -389,7 +380,7 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
                 <div className="btn-3d-offset" aria-hidden />
                 <button
                   onClick={handleLogout}
-                  className="btn-3d btn-3d--primary"
+                  className="btn-3d btn-3d--primary !w-full flex items-center justify-center"
                 >
                   <span className="text-md text-prim-100 font-inter font-medium">
                     Log Out

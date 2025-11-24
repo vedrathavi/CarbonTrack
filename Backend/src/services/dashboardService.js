@@ -156,7 +156,16 @@ export async function getComparison(homeId, days = 7, endDate = null) {
     totalsByDate[key] = (totalsByDate[key] || 0) + total;
   }
   const globalTotal = Object.values(totalsByDate).reduce((a, b) => a + b, 0);
-  const globalAvg = days > 0 ? Number((globalTotal / days).toFixed(2)) : 0;
+  // Compute global average as average per-home per-day value. Previously the
+  // code divided by `days` only which yielded the combined daily total across
+  // all homes (too large). Divide by number of homes * days to get a true
+  // per-home daily average. Include homes with no data as zeros by using the
+  // Home collection count.
+  const totalHomes = await Home.countDocuments();
+  const globalAvg =
+    days > 0 && totalHomes > 0
+      ? Number((globalTotal / (days * totalHomes)).toFixed(2))
+      : 0;
 
   const sufficient = homeDocs.length >= days;
   return { homeAvg, globalAvg, days, sufficient };

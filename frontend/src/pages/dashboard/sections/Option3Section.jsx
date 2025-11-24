@@ -48,10 +48,10 @@ const TAG_ICONS = {
   // Original tags
   suggestion: Lightbulb,
   appliance: Home,
-  cooling: Wind,
+ 
   heating: Thermometer,
   maintenance: Shield,
-  fun: Zap,
+  
   water: Droplets,
   energy: Battery,
   solar: Sun,
@@ -66,7 +66,7 @@ const TAG_ICONS = {
   "always-on": Power,
   awareness: Eye,
   behavior: Brain,
-  carbon: AirVent,
+  carbon: Wind,
   cooling: Snowflake,
   electronics: Cpu,
   equivalence: Scale,
@@ -75,7 +75,7 @@ const TAG_ICONS = {
 
   fun: Zap,
   kitchen: Home,
-  maintenance: Wrench,
+  
   night: Moon,
   passive: Sofa,
   "smart home": Smartphone,
@@ -90,9 +90,9 @@ const TAG_COLORS = {
   // Original tags
   suggestion: "bg-sec-50/50 border-sec-200 text-sec-700",
   appliance: "bg-sec-50/50 border-sec-200 text-sec-700",
-  cooling: "bg-blue-50/50 border-blue-200 text-blue-700",
+  
   heating: "bg-orange-50/50 border-orange-200 text-orange-700",
-  maintenance: "bg-indigo-50/50 border-indigo-200 text-indigo-700",
+  
   fun: "bg-pink-50/50 border-pink-200 text-pink-700",
   water: "bg-cyan-50/50 border-cyan-200 text-cyan-700",
   energy: "bg-amber-50/50 border-amber-200 text-amber-700",
@@ -115,7 +115,7 @@ const TAG_COLORS = {
   fan: "bg-blue-50/50 border-blue-200 text-blue-700",
   filter: "bg-amber-50/50 border-amber-200 text-amber-700",
   footprint: "bg-green-50/50 border-green-200 text-green-700",
-  fun: "bg-pink-50/50 border-pink-200 text-pink-700",
+
   kitchen: "bg-red-50/50 border-red-200 text-red-700",
   maintenance: "bg-yellow-50/50 border-yellow-200 text-yellow-700",
   night: "bg-indigo-50/50 border-indigo-200 text-indigo-700",

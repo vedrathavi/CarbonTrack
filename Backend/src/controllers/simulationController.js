@@ -39,6 +39,23 @@ export async function simulateAndSave(homeId, date = new Date()) {
     emissionFactor: emissionFactorKg,
   });
 
+  // If simulation returned no appliance data (e.g., all appliance counts are 0),
+  // create a zero-filled placeholder so the HourlyEmission validator does not reject
+  // the document. This ensures every home has a daily row even when there are
+  // no appliances configured.
+  const simEmissionsKeys =
+    sim && sim.emissions ? Object.keys(sim.emissions) : [];
+  if (!simEmissionsKeys.length) {
+    console.warn(
+      `[simulation] no appliances for home ${resolved.toString()} on ${utcDate
+        .toISOString()
+        .slice(0, 10)} — storing placeholder daily doc`
+    );
+    sim.emissions = { no_appliances: new Array(24).fill(0) };
+    sim.totalHourly = new Array(24).fill(0);
+    sim.summary = { totalEmissions: 0, topAppliance: null };
+  }
+
   // Normalize date to UTC midnight (same logic as HourlyEmission pre-save)
   const d = date ? new Date(date) : new Date();
   const utcDate = new Date(

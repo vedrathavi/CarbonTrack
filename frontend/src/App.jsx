@@ -12,7 +12,6 @@ import DashboardLayout from "@/components/Dashboard/Layout";
 import DashboardSection from "./pages/dashboard/sections/DashboardSection";
 import EducationSection from "./pages/dashboard/sections/EducationSection";
 import InsightsSection from "./pages/dashboard/sections/Option3Section";
-import Option4Section from "./pages/dashboard/sections/Option4Section";
 import Profile from "./pages/dashboard/Profile";
 import Loading from "./pages/Loading";
 const PrivateRoute = ({ children }) => {
@@ -124,9 +123,8 @@ const App = () => {
           <Route path="dashboard" element={<DashboardSection />} />
           <Route path="education" element={<EducationSection />} />
           <Route path="insights" element={<InsightsSection />} />
-          <Route path="option4" element={<Option4Section />} />
+
           <Route path="profile" element={<Profile />} />
-          
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
