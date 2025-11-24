@@ -895,21 +895,63 @@ This project is licensed under the MIT License.
 - **Cron job throttling** with small delays between homes
 - **API response caching** (emission factors cached in DB)
 
-## 🧪 Testing
+## 🧪 Testing & Quality Assurance
 
-Currently, the project does not include automated tests. Recommended testing strategies:
+The frontend now includes a comprehensive Vitest test suite covering components, hooks, utilities, boundary conditions, and documented technical debt via intentional failing tests. Backend tests are still pending and outlined below as next steps.
 
-### Backend
+### Frontend Test Stack
+- **Runner**: Vitest (`vitest`, `@vitest/ui` for interactive mode)
+- **DOM Environment**: `happy-dom` (fast JSDOM alternative)
+- **Rendering & Interaction**: `@testing-library/react` + `@testing-library/user-event`
+- **Matchers**: `@testing-library/jest-dom`
+- **Coverage**: `vitest --coverage` (Istanbul reports)
 
-- **Unit tests** for services (simulationService, insightService, dashboardService)
-- **Integration tests** for API endpoints (using supertest)
-- **Mocks** for external APIs (Climatiq, Gemini)
+### Scripts
+Run from `frontend/`:
+```bash
+npm run test          # Headless CLI tests
+npm run test:ui       # Interactive UI at http://localhost:<port>/__vitest__/
+npm run test:coverage # Generate coverage summary
+```
 
-### Frontend
+### Current Coverage Focus
+- Components: Rendering, conditional states, formatting, empty/fallback UI.
+- Hooks & Stores: Zustand slice behavior, auth/home state transitions.
+- Utilities: Deterministic helpers (`cn`, constants, API client config).
+- Boundary Tests: Extreme numeric values (0, negative, large, `NaN`, `Infinity`), percentage diffs, zero appliance scenarios, data absence resiliency.
+- Intentional Failing Tests: Explicitly marked with `it.fails(...)` to document known limitations (accessibility gaps, performance assumptions, missing validation). These are expected to FAIL; Vitest inverts success semantics so a failure counts as a “handled” case. If one of these tests unexpectedly passes, the suite reports an "Unexpected test pass" prompting review.
 
-- **Component tests** (React Testing Library)
-- **E2E tests** (Playwright / Cypress) for critical flows
-- **Visual regression tests** for UI consistency
+#### Interpreting Pass Counts
+When the summary shows all tests passing (e.g. `96 passed`), intentional failing tests have correctly failed inside their `it.fails` blocks. Treat this as: "All standard expectations met and all known issues remain documented." If an intentional failing test starts passing, reassess whether the limitation has been resolved and either convert it to a normal test or remove it.
+
+#### Example Intentional Failing Pattern
+```ts
+it.fails('lacks ARIA roles for charts', () => {
+  // Expecting improved accessibility in future; current absence should trigger failure
+  expect(screen.getByRole('figure')).toBeInTheDocument(); // Will fail until role added
+});
+```
+
+### Backend Testing Roadmap (Planned)
+- Unit tests: `simulationService`, `dashboardService`, `emissionFactorService` logic (edge cases & error paths).
+- Integration tests: Key routes (auth, emission generation, insights) via `supertest` + in-memory Mongo (or test DB).
+- Mocks/Stubs: External APIs (Climatiq, Gemini) to ensure deterministic responses.
+- Load/Schedule Tests: Cron job execution resilience and idempotency (simulate multiple runs).
+
+### Future QA Enhancements
+- Accessibility automated checks (axe / playwright-axe)
+- Visual regression (Chromatic or Playwright snapshots)
+- Mutation testing (Stryker) for critical logic robustness
+- Performance budgets (Lighthouse CI) & store update profiling
+- Security scanning (dependency & minimal secrets exposure tests)
+
+If you contribute tests, follow existing patterns in `frontend/tests/` and prefer:
+- Clear arrange / act / assert sections
+- Minimal mocking; test observable behavior
+- One primary expectation per test where practical
+- Descriptive test names reflecting user-facing outcomes
+
+Backend test scaffolding is welcome—open a PR with a focused first suite (e.g. emission factor caching) before broad coverage.
 
 ## 🔮 Future Enhancements
 
