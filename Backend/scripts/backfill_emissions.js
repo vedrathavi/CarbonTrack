@@ -21,7 +21,9 @@ if (!MONGO_URI) {
 
 function normalizeDateToUTCDay(date) {
   const d = date ? new Date(date) : new Date();
-  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  return new Date(
+    Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+  );
 }
 
 function addDays(date, days) {
@@ -57,7 +59,9 @@ async function main() {
   }
 
   console.log(
-    `[backfill_emissions] Backfilling for ${homes.length} homes from ${start.toISOString().slice(0,10)} to ${end.toISOString().slice(0,10)}`
+    `[backfill_emissions] Backfilling for ${homes.length} homes from ${start
+      .toISOString()
+      .slice(0, 10)} to ${end.toISOString().slice(0, 10)}`
   );
 
   let created = 0;
@@ -68,7 +72,10 @@ async function main() {
     const homeId = h._id;
     for (let d = new Date(start); d <= end; d = addDays(d, 1)) {
       const target = normalizeDateToUTCDay(d);
-      const existing = await HourlyEmission.findOne({ homeId, date: target }).lean();
+      const existing = await HourlyEmission.findOne({
+        homeId,
+        date: target,
+      }).lean();
       if (existing) {
         skipped++;
         continue;
@@ -79,13 +86,20 @@ async function main() {
         // small delay to avoid overwhelming DB
         await new Promise((r) => setTimeout(r, 50));
       } catch (e) {
-        console.error("[backfill_emissions] simulateAndSave failed for", homeId, target.toISOString().slice(0,10), e.message || e);
+        console.error(
+          "[backfill_emissions] simulateAndSave failed for",
+          homeId,
+          target.toISOString().slice(0, 10),
+          e.message || e
+        );
         failed++;
       }
     }
   }
 
-  console.log(`[backfill_emissions] Completed. created=${created} skipped=${skipped} failed=${failed}`);
+  console.log(
+    `[backfill_emissions] Completed. created=${created} skipped=${skipped} failed=${failed}`
+  );
   await mongoose.disconnect();
 }
 
