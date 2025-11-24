@@ -1,18 +1,18 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import useAppStore from '@/stores/useAppStore';
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import useAppStore from "@/stores/useAppStore";
 
-vi.mock('@/stores/useAppStore');
+vi.mock("@/stores/useAppStore");
 
-describe('useAppStore - Auth State', () => {
+describe("useAppStore - Auth State", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('provides user info when authenticated', () => {
+  it("provides user info when authenticated", () => {
     const mockUserInfo = {
-      id: '123',
-      name: 'Test User',
-      email: 'test@example.com',
+      id: "123",
+      name: "Test User",
+      email: "test@example.com",
     };
 
     useAppStore.mockReturnValue({
@@ -21,10 +21,10 @@ describe('useAppStore - Auth State', () => {
 
     const store = useAppStore();
     expect(store.userInfo).toEqual(mockUserInfo);
-    expect(store.userInfo.name).toBe('Test User');
+    expect(store.userInfo.name).toBe("Test User");
   });
 
-  it('handles null user info when not authenticated', () => {
+  it("handles null user info when not authenticated", () => {
     useAppStore.mockReturnValue({
       userInfo: null,
     });

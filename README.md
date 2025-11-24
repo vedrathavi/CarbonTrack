@@ -159,8 +159,6 @@ npm run dev
 
 Frontend will run on `http://localhost:5173`
 
-
-
 This script starts both backend and frontend in parallel.
 
 ### Initial Setup & Data Generation
@@ -900,6 +898,7 @@ This project is licensed under the MIT License.
 The frontend now includes a comprehensive Vitest test suite covering components, hooks, utilities, boundary conditions, and documented technical debt via intentional failing tests. Backend tests are still pending and outlined below as next steps.
 
 ### Frontend Test Stack
+
 - **Runner**: Vitest (`vitest`, `@vitest/ui` for interactive mode)
 - **DOM Environment**: `happy-dom` (fast JSDOM alternative)
 - **Rendering & Interaction**: `@testing-library/react` + `@testing-library/user-event`
@@ -907,7 +906,9 @@ The frontend now includes a comprehensive Vitest test suite covering components,
 - **Coverage**: `vitest --coverage` (Istanbul reports)
 
 ### Scripts
+
 Run from `frontend/`:
+
 ```bash
 npm run test          # Headless CLI tests
 npm run test:ui       # Interactive UI at http://localhost:<port>/__vitest__/
@@ -915,6 +916,7 @@ npm run test:coverage # Generate coverage summary
 ```
 
 ### Current Coverage Focus
+
 - Components: Rendering, conditional states, formatting, empty/fallback UI.
 - Hooks & Stores: Zustand slice behavior, auth/home state transitions.
 - Utilities: Deterministic helpers (`cn`, constants, API client config).
@@ -922,23 +924,27 @@ npm run test:coverage # Generate coverage summary
 - Intentional Failing Tests: Explicitly marked with `it.fails(...)` to document known limitations (accessibility gaps, performance assumptions, missing validation). These are expected to FAIL; Vitest inverts success semantics so a failure counts as a “handled” case. If one of these tests unexpectedly passes, the suite reports an "Unexpected test pass" prompting review.
 
 #### Interpreting Pass Counts
+
 When the summary shows all tests passing (e.g. `96 passed`), intentional failing tests have correctly failed inside their `it.fails` blocks. Treat this as: "All standard expectations met and all known issues remain documented." If an intentional failing test starts passing, reassess whether the limitation has been resolved and either convert it to a normal test or remove it.
 
 #### Example Intentional Failing Pattern
+
 ```ts
-it.fails('lacks ARIA roles for charts', () => {
+it.fails("lacks ARIA roles for charts", () => {
   // Expecting improved accessibility in future; current absence should trigger failure
-  expect(screen.getByRole('figure')).toBeInTheDocument(); // Will fail until role added
+  expect(screen.getByRole("figure")).toBeInTheDocument(); // Will fail until role added
 });
 ```
 
 ### Backend Testing Roadmap (Planned)
+
 - Unit tests: `simulationService`, `dashboardService`, `emissionFactorService` logic (edge cases & error paths).
 - Integration tests: Key routes (auth, emission generation, insights) via `supertest` + in-memory Mongo (or test DB).
 - Mocks/Stubs: External APIs (Climatiq, Gemini) to ensure deterministic responses.
 - Load/Schedule Tests: Cron job execution resilience and idempotency (simulate multiple runs).
 
 ### Future QA Enhancements
+
 - Accessibility automated checks (axe / playwright-axe)
 - Visual regression (Chromatic or Playwright snapshots)
 - Mutation testing (Stryker) for critical logic robustness
@@ -946,6 +952,7 @@ it.fails('lacks ARIA roles for charts', () => {
 - Security scanning (dependency & minimal secrets exposure tests)
 
 If you contribute tests, follow existing patterns in `frontend/tests/` and prefer:
+
 - Clear arrange / act / assert sections
 - Minimal mocking; test observable behavior
 - One primary expectation per test where practical
