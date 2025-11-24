@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import useAppStore from "../../stores/useAppStore";
 import useDashboardData from "../../hooks/useDashboardData";
+import useInsights from "../../hooks/useInsights";
 import TotalCard from "../../components/Dashboard/TotalCard";
 import HourlyLineChart from "../../components/Dashboard/HourlyLineChart";
 import AppliancePieChart from "../../components/Dashboard/AppliancePieChart";
@@ -17,9 +19,12 @@ import {
   FiCalendar,
   FiPieChart,
   FiClock,
+  FiExternalLink,
 } from "react-icons/fi";
+import { Lightbulb, TrendingUp, AlertCircle, TrendingDown } from "lucide-react";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const home = useAppStore((s) => s.home);
   const homeLoading = useAppStore((s) => s.homeLoading);
 
@@ -40,6 +45,8 @@ export default function Dashboard() {
     fetchMonth,
     fetchComparison,
   } = useDashboardData(homeIdCandidate);
+
+  const { insights, insightsLoading } = useInsights();
 
   useEffect(() => {
     if (homeIdCandidate) {
@@ -147,13 +154,11 @@ export default function Dashboard() {
       >
         {/* Hourly Chart - Takes 4/7 width */}
         <div className="xl:col-span-4  ">
-          
           <HourlyLineChart hourly={today ? today.totalHourly : null} />
         </div>
 
         {/* Appliance Pie Chart - Takes 3/7 width */}
         <div className="xl:col-span-3 bg-neu-0 rounded-2xl">
-          
           <AppliancePieChart applianceTotals={today?.applianceTotals || {}} />
         </div>
       </section>
@@ -258,6 +263,104 @@ export default function Dashboard() {
           </div>
           <WeeksBarChart month={_month} />
         </div>
+      </section>
+
+      {/* Section 5: Top Insights */}
+      <section
+        className="bg-neu-0 rounded-2xl border border-prim-200 p-6"
+        aria-label="AI Insights Preview"
+      >
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-sec-100 rounded-xl flex items-center justify-center border border-sec-200">
+              <Lightbulb className="w-5 h-5 text-sec-600" />
+            </div>
+            <div>
+              <h3 className="font-inter font-medium text-sec-800 text-lg">
+                AI-Powered Insights
+              </h3>
+              <p className="text-sm text-sec-600 font-inter">
+                Smart recommendations to reduce your carbon footprint
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate("/insights")}
+            className="inline-flex -mt-6 items-center gap-2 px-2 py-2 bg-transparent text-neu-400 rounded-lg hover:text-sec-600 hover:cursor-pointer transition-colors text-sm font-medium"
+          >
+            <FiExternalLink className="w-6 h-6" />
+          </button>
+        </div>
+
+        {insightsLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-xl border border-gray-200 p-4 animate-pulse"
+              >
+                <div className="h-5 w-20 bg-gray-200 rounded mb-3"></div>
+                <div className="h-4 w-full bg-gray-200 rounded mb-2"></div>
+                <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+              </div>
+            ))}
+          </div>
+        ) : insights && insights.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {insights.slice(0, 3).map((insight) => {
+              const IMPACT_LEVELS = {
+                high: {
+                  color: "bg-red-50 border-red-300 text-red-700",
+                  icon: AlertCircle,
+                  label: "High Impact",
+                },
+                medium: {
+                  color: "bg-amber-50 border-amber-300 text-amber-700",
+                  icon: TrendingUp,
+                  label: "Medium Impact",
+                },
+                low: {
+                  color: "bg-green-50 border-green-300 text-green-700",
+                  icon: TrendingDown,
+                  label: "Low Impact",
+                },
+              };
+              const impactConfig =
+                IMPACT_LEVELS[insight.impactLevel] || IMPACT_LEVELS.low;
+              const IconComponent = impactConfig.icon;
+
+              return (
+                <div
+                  key={insight._id}
+                  className="bg-white rounded-xl border border-gray-200 p-4 hover:border-sec-300 transition-colors cursor-pointer"
+                  onClick={() => navigate("/insights")}
+                >
+                  <div
+                    className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md font-semibold text-xs border mb-3 ${impactConfig.color}`}
+                  >
+                    <IconComponent className="w-3.5 h-3.5" />
+                    {impactConfig.label}
+                  </div>
+                  <h4 className="font-semibold text-prim-900 mb-2 text-sm line-clamp-2">
+                    {insight.title}
+                  </h4>
+                  <p className="text-neu-600/90 text-xs line-clamp-2">
+                    {insight.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Lightbulb className="w-6 h-6 text-gray-400" />
+            </div>
+            <p className="text-gray-600 text-sm">
+              No insights available yet. Check back soon!
+            </p>
+          </div>
+        )}
       </section>
     </div>
   );

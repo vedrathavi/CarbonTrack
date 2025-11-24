@@ -53,7 +53,8 @@ const sections = [
     subs: [
       { id: "sub-1", label: "Overview" },
       { id: "sub-2", label: "Analytics" },
-      { id: "sub-3", label: "Insights" },
+      { id: "sub-3", label: "Trends" },
+      { id: "sub-4", label: "Insights" },
     ],
   },
   {
@@ -176,7 +177,7 @@ export default function Sidebar({ collapsed, setCollapsed, onCloseDrawer }) {
               }
             }}
             aria-label="Go to dashboard"
-            className="flex items-center gap-3 focus:outline-none group"
+            className="flex items-center gap-3 focus:outline-none group cursor-pointer"
           >
             <div className="w-8 h-8 rounded-sm overflow-hidden flex items-center justify-center relative">
               {/* logo visible by default; when collapsed and hovered, show chevron instead */}
