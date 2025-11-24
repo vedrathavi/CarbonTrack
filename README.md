@@ -651,7 +651,7 @@ Modular chart components built with Recharts:
 
 Protected routes use `PrivateRoute` wrapper that checks authentication and home membership before allowing access.
 
-## 🧮 Simulation Algorithm
+## � Simulation Algorithm
 
 The emission simulation (`Backend/src/services/simulationService.js`) generates realistic 24-hour emission profiles:
 
@@ -745,243 +745,317 @@ The service builds a detailed prompt including:
 - **Loading states** and skeletons for async operations
 - **3D button effects** with shadow/transform on active state
 - **Collapsible sidebar** with hover effects and smooth transitions
-- **Dark mode support** (via Tailwind CSS dark: variants)
+
+### Charts & Visualizations
 
 ### Charts & Visualizations
 
 - **Interactive tooltips** showing exact values on hover
-- **Responsive legends** with click-to-toggle series
+- **Responsive legends** with click-to-toggle seriesover
 - **Color-coded data** (green for good, red for high usage)
-- **Animated transitions** when data updates
-- **Gradient fills** for area charts
+- **Animated transitions** when data updatesfor high usage)
+- **Gradient fills** for area charts updates
 - **Custom tick formatters** for dates and numbers
+- **Custom tick formatters** for dates and numbers
+
+### Accessibility
 
 ### Accessibility
 
 - **Keyboard navigation** support
 - **Focus visible** styles for keyboard users
 - **Screen reader** friendly component structure
+- **Screen reader** friendly component structure
+
+## 🔄 Onboarding Flow
 
 ## 🔄 Onboarding Flow
 
 1. **Landing Page** - Google OAuth login
 2. **Home Selection** - Choose to create or join home
-3. **Create Home Path:**
+3. **Create Home Path:**Choose to create or join home
    - Location selection (country, state, city)
-   - Home details (rooms, appliances)
-   - Success modal with home code
-4. **Join Home Path:**
-   - Enter home code
+   - Home details (rooms, appliances)te, city)
+   - Success modal with home codeces)
+4. **Join Home Path:**h home code
+   - Enter home code\*\*
    - Success modal with home details
+   - Success modal with home details
+
+## 🐛 Common Issues & Solutions
 
 ## 🐛 Common Issues & Solutions
 
 ### MongoDB Connection Timeout
 
+### MongoDB Connection Timeout
+
 - Whitelist your IP address in MongoDB Atlas
 - Or use `0.0.0.0/0` for testing (not recommended for production)
+- Or use `0.0.0.0/0` for testing (not recommended for production)
+
+### Climatiq API 403 Forbidden
 
 ### Climatiq API 403 Forbidden
 
 - Verify your API key is valid
 - Check your plan supports the requested features
+- Some regions may not be available in free tiers
 - Some regions may not be available in free tier
 
 ### Google OAuth Not Working
 
+### Google OAuth Not Working
+
 - Verify callback URL in Google Console matches your backend URL
-- Check `CLIENT_URL` in backend .env matches frontend URL
-- Ensure cookies are enabled in browser
+- Check `CLIENT_URL` in backend .env matches frontend URLend URL
+- Ensure cookies are enabled in browsertches frontend URL
 - For production, set `sameSite: 'none'` and `secure: true` in cookie options
+- For production, set `sameSite: 'none'` and `secure: true` in cookie options
+
+### Insights Not Generating
 
 ### Insights Not Generating
 
 - Verify `GEMINI_API_KEY` is set in backend `.env`
 - Check Gemini API quota/limits in Google Cloud Console
 - Run `node scripts/run_insight_for_home.js` to test generation
+- Check backend logs for prompt/response detailstest generation
 - Check backend logs for prompt/response details
 
 ### Missing Daily Emission Data
 
+### Missing Daily Emission Data
+
 - Run backfill script: `node scripts/backfill_emissions.js`
-- Check if homes have appliances configured (count > 0)
+- Check if homes have appliances configured (count > 0).js`
 - Verify scheduler is running (check console logs at midnight IST)
+- Manually trigger simulation via API if neededgs at midnight IST)
 - Manually trigger simulation via API if needed
 
 ### High Global Average in Comparison
 
+### High Global Average in Comparison
+
 - This was a bug fixed in v1.1 — global avg now divides by (total homes × days)
-- Update to latest code if seeing unrealistic values
+- Update to latest code if seeing unrealistic valuesdes by (total homes × days)
 - Global avg represents average per-home per-day emissions across all homes
+- Global avg represents average per-home per-day emissions across all homes
+
+## 🤝 Contributing
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)e`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)`)
+5. Open a Pull Request(`git push origin feature/AmazingFeature`)
+6. Open a Pull Request
+
+## 📝 License
 
 ## 📝 License
 
 This project is licensed under the MIT License.
+This project is licensed under the MIT License.
+
+## 👥 Authors
 
 ## 👥 Authors
 
 - **Ved Rathavi** - [vedrathavi](https://github.com/vedrathavi)
+- **Ved Rathavi** - [vedrathavi](https://github.com/vedrathavi)
+
+## 🚀 Deployment
 
 ## 🚀 Deployment
 
 ### Backend Deployment (Render / Railway / Heroku)
 
+### Backend Deployment (Render / Railway / Heroku)
+
 1. Set all environment variables in your hosting platform
 2. Ensure MongoDB is accessible (whitelist hosting IP or use 0.0.0.0/0 for testing)
-3. Set `CLIENT_URL` to your deployed frontend URL
+3. Set `CLIENT_URL` to your deployed frontend URLg IP or use 0.0.0.0/0 for testing)
 4. Enable cookies with `sameSite: 'none'` and `secure: true` for cross-origin
-5. Start command: `node server.js`
+5. Start command: `node server.js`'none'`and`secure: true` for cross-origin
+6. Start command: `node server.js`
+
+### Frontend Deployment (Vercel / Netlify)
 
 ### Frontend Deployment (Vercel / Netlify)
 
 1. Set `VITE_SERVER_URL` environment variable to your backend URL
-2. Build command: `npm run build`
-3. Output directory: `dist`
+2. Build command: `npm run build`ent variable to your backend URL
+3. Output directory: `dist`build`
 4. Ensure CORS is properly configured in backend
+5. Ensure CORS is properly configured in backend
+
+### Production Checklist
 
 ### Production Checklist
 
 - [ ] Set strong `JWT_SECRET` (min 32 random characters)
 - [ ] Whitelist specific IPs in MongoDB Atlas (or use 0.0.0.0/0 temporarily)
-- [ ] Configure Google OAuth with production callback URLs
-- [ ] Set `NODE_ENV=production` in backend
+- [ ] Configure Google OAuth with production callback URLs0.0/0 temporarily)
+- [ ] Set `NODE_ENV=production` in backendon callback URLs
 - [ ] Enable cookie security (`sameSite: 'none'`, `secure: true`)
-- [ ] Set up monitoring/logging (optional: Sentry, LogRocket)
-- [ ] Test OAuth flow end-to-end in production
-- [ ] Verify scheduler runs at expected times
+- [ ] Set up monitoring/logging (optional: Sentry, LogRocket)ue`)
+- [ ] Test OAuth flow end-to-end in productiontry, LogRocket)
+- [ ] Verify scheduler runs at expected timesn
+- [ ] Test insights generation with real API key
 - [ ] Test insights generation with real API key
 
 ### Environment-Specific Notes
 
+### Environment-Specific Notes
+
+**Development:**
 **Development:**
 
 - Frontend runs on `http://localhost:5173`
-- Backend runs on `http://localhost:5000`
+- Backend runs on `http://localhost:5000``
 - Cookies use `sameSite: 'lax'` and `secure: false`
-
-**Production:**
-
+- Cookies use `sameSite: 'lax'` and `secure: false`
+  **Production:**
+  **Production:**
 - Frontend and backend on different domains (CORS configured)
-- Cookies must use `sameSite: 'none'` and `secure: true`
+- Cookies must use `sameSite: 'none'` and `secure: true`ured)
+- HTTPS required for secure cookies'`and`secure: true`
 - HTTPS required for secure cookies
 
 ## 🔒 Security Considerations
 
+## 🔒 Security Considerations
+
 - **JWT tokens** stored in HTTP-only cookies (not accessible via JavaScript)
-- **CORS** configured to allow only `CLIENT_URL` origin
+- **CORS** configured to allow only `CLIENT_URL` originsible via JavaScript)
 - **Emission factors** cached to reduce external API calls
 - **User data** encrypted in transit (HTTPS in production)
-- **MongoDB connection** uses secure connection string
-- **OAuth secrets** never exposed to frontend
+- **MongoDB connection** uses secure connection stringion)
+- **OAuth secrets** never exposed to frontendon string
 - **API rate limiting** recommended for production (not yet implemented)
+- **API rate limiting** recommended for production (not yet implemented)
+
+## 📈 Performance Optimizations
 
 ## 📈 Performance Optimizations
 
 - **Lazy loading** for dashboard charts and sections
 - **Memoized components** (React.memo) for expensive renders
-- **Zustand selectors** to prevent unnecessary re-renders
+- **Zustand selectors** to prevent unnecessary re-rendersers
 - **MongoDB indexes** on frequently queried fields (`homeId`, `date`, `userId`)
-- **Unique compound indexes** to prevent duplicates and speed up lookups
-- **Cron job throttling** with small delays between homes
+- **Unique compound indexes** to prevent duplicates and speed up lookupsserId`)
+- **Cron job throttling** with small delays between homespeed up lookups
+- **API response caching** (emission factors cached in DB)
 - **API response caching** (emission factors cached in DB)
 
 ## 🧪 Testing & Quality Assurance
 
-The frontend now includes a comprehensive Vitest test suite covering components, hooks, utilities, boundary conditions, and documented technical debt via intentional failing tests. Backend tests are still pending and outlined below as next steps.
+The frontend now includes a comprehensive Vitest test suite covering components, hooks, utilities, boundary conditions, and documented technical debt via intentional failing tests.
 
-### Frontend Test Stack
+The backend now features a full test suite with 98 passing tests across 9 suites, including:
 
-- **Runner**: Vitest (`vitest`, `@vitest/ui` for interactive mode)
-- **DOM Environment**: `happy-dom` (fast JSDOM alternative)
-- **Rendering & Interaction**: `@testing-library/react` + `@testing-library/user-event`
-- **Matchers**: `@testing-library/jest-dom`
-- **Coverage**: `vitest --coverage` (Istanbul reports)
+- Model, service, middleware, and integration (route/controller) tests
+- Integration tests using Supertest and in-memory MongoDB for authentication, home management, dashboard, and insights endpoints
+- JWT authentication in tests matches production `.env` configuration for reliable auth coverage
+- Expanded error handling and boundary tests for all major endpoints (invalid input, expired/malformed tokens, authorization failures, edge cases)
+- Coverage: 44.91% statements | 27.54% branches | 55.33% functions | 46.23% lines
+- All core models, middleware, and routes directly tested
+
+This ensures robust API reliability for all frontend features and future development.
 
 ### Scripts
 
-Run from `frontend/`:
+### Frontend Test StackRun from `frontend/`:
 
-```bash
-npm run test          # Headless CLI tests
-npm run test:ui       # Interactive UI at http://localhost:<port>/__vitest__/
-npm run test:coverage # Generate coverage summary
-```
+- **Runner**: Vitest (`vitest`, `@vitest/ui` for interactive mode)
+- **DOM Environment**: `happy-dom` (fast JSDOM alternative)
+- **Rendering & Interaction**: `@testing-library/react` + `@testing-library/user-event`localhost:<port>/**vitest**/
+- **Matchers**: `@testing-library/jest-dom` run test:coverage # Generate coverage summary
+- **Coverage**: `vitest --coverage` (Istanbul reports)
 
 ### Current Coverage Focus
 
-- Components: Rendering, conditional states, formatting, empty/fallback UI.
+Run from `frontend/`:k UI.
+
+````bash
+npm run test          # Headless CLI tests
+npm run test:ui       # Interactive UI at http://localhost:<port>/__vitest__/- Intentional Failing Tests: Explicitly marked with `it.fails(...)` to document known limitations (accessibility gaps, performance assumptions, missing validation). These are expected to FAIL; Vitest inverts success semantics so a failure counts as a “handled” case. If one of these tests unexpectedly passes, the suite reports an "Unexpected test pass" prompting review.
+npm run test:coverage # Generate coverage summary
+```#### Interpreting Pass Counts
+
+### Current Coverage FocusWhen the summary shows all tests passing (e.g. `96 passed`), intentional failing tests have correctly failed inside their `it.fails` blocks. Treat this as: "All standard expectations met and all known issues remain documented." If an intentional failing test starts passing, reassess whether the limitation has been resolved and either convert it to a normal test or remove it.
+
+- Components: Rendering, conditional states, formatting, empty/fallback UI.#### Example Intentional Failing Pattern
 - Hooks & Stores: Zustand slice behavior, auth/home state transitions.
 - Utilities: Deterministic helpers (`cn`, constants, API client config).
 - Boundary Tests: Extreme numeric values (0, negative, large, `NaN`, `Infinity`), percentage diffs, zero appliance scenarios, data absence resiliency.
 - Intentional Failing Tests: Explicitly marked with `it.fails(...)` to document known limitations (accessibility gaps, performance assumptions, missing validation). These are expected to FAIL; Vitest inverts success semantics so a failure counts as a “handled” case. If one of these tests unexpectedly passes, the suite reports an "Unexpected test pass" prompting review.
-
+xpect(screen.getByRole("figure")).toBeInTheDocument(); // Will fail until role added
 #### Interpreting Pass Counts
+````
 
 When the summary shows all tests passing (e.g. `96 passed`), intentional failing tests have correctly failed inside their `it.fails` blocks. Treat this as: "All standard expectations met and all known issues remain documented." If an intentional failing test starts passing, reassess whether the limitation has been resolved and either convert it to a normal test or remove it.
 
+### Backend Testing Roadmap (Planned)
+
 #### Example Intentional Failing Pattern
 
-```ts
+```tsst` + in-memory Mongo (or test DB).
 it.fails("lacks ARIA roles for charts", () => {
-  // Expecting improved accessibility in future; current absence should trigger failure
-  expect(screen.getByRole("figure")).toBeInTheDocument(); // Will fail until role added
-});
+// Expecting improved accessibility in future; current absence should trigger failure- Load/Schedule Tests: Cron job execution resilience and idempotency (simulate multiple runs).
+expect(screen.getByRole("figure")).toBeInTheDocument(); // Will fail until role added
+});### Future QA Enhancements
+
 ```
 
 ### Backend Testing Roadmap (Planned)
 
 - Unit tests: `simulationService`, `dashboardService`, `emissionFactorService` logic (edge cases & error paths).
-- Integration tests: Key routes (auth, emission generation, insights) via `supertest` + in-memory Mongo (or test DB).
+- Integration tests: Key routes (auth, emission generation, insights) via `supertest` + in-memory Mongo (or test DB).- Security scanning (dependency & minimal secrets exposure tests)
 - Mocks/Stubs: External APIs (Climatiq, Gemini) to ensure deterministic responses.
-- Load/Schedule Tests: Cron job execution resilience and idempotency (simulate multiple runs).
+- Load/Schedule Tests: Cron job execution resilience and idempotency (simulate multiple runs).If you contribute tests, follow existing patterns in `frontend/tests/` and prefer:
 
 ### Future QA Enhancements
 
 - Accessibility automated checks (axe / playwright-axe)
-- Visual regression (Chromatic or Playwright snapshots)
+- Visual regression (Chromatic or Playwright snapshots)- Descriptive test names reflecting user-facing outcomes
 - Mutation testing (Stryker) for critical logic robustness
-- Performance budgets (Lighthouse CI) & store update profiling
+- Performance budgets (Lighthouse CI) & store update profilingBackend test scaffolding is welcome—open a PR with a focused first suite (e.g. emission factor caching) before broad coverage.
 - Security scanning (dependency & minimal secrets exposure tests)
-
+## 🔮 Future Enhancements
 If you contribute tests, follow existing patterns in `frontend/tests/` and prefer:
-
+Sockets/Socket.io
 - Clear arrange / act / assert sections
-- Minimal mocking; test observable behavior
+- Minimal mocking; test observable behaviorsage alerts
 - One primary expectation per test where practical
 - Descriptive test names reflecting user-facing outcomes
+appliances
+Backend test scaffolding is welcome—open a PR with a focused first suite (e.g. emission factor caching) before broad coverage.DF)
 
-Backend test scaffolding is welcome—open a PR with a focused first suite (e.g. emission factor caching) before broad coverage.
-
-## 🔮 Future Enhancements
-
-- [ ] Real-time updates via WebSockets/Socket.io
-- [ ] Mobile app (React Native)
-- [ ] Push notifications for high usage alerts
+## 🔮 Future Enhancementsn)
+real-time data)
+- [ ] Real-time updates via WebSockets/Socket.iotion
+- [ ] Mobile app (React Native)g
+- [ ] Push notifications for high usage alerts- [ ] Admin dashboard for super admins
 - [ ] Goal setting and gamification
-- [ ] Social features (compare with friends)
+- [ ] Social features (compare with friends)## 🙏 Acknowledgments
 - [ ] More appliance types and custom appliances
 - [ ] Historical data export (CSV/PDF)
 - [ ] Multi-language support (i18n)
-- [ ] Advanced analytics (ML predictions, anomaly detection)
+- [ ] Advanced analytics (ML predictions, anomaly detection)s
 - [ ] Integration with smart home devices (real-time data)
 - [ ] Carbon offset marketplace integration
-- [ ] Community forums and tips sharing
+- [ ] Community forums and tips sharing- All open-source contributors whose libraries made this project possible
 - [ ] Admin dashboard for super admins
-
+---
 ## 🙏 Acknowledgments
-
+Made with ❤️ for a sustainable future 🌱
 - [Climatiq](https://www.climatiq.io/) for emission factor data
-- [Google Gemini](https://ai.google.dev/) for AI-powered insights
-- [shadcn/ui](https://ui.shadcn.com/) for beautiful UI components
-- [Recharts](https://recharts.org/) for responsive chart library
+- [Google Gemini](https://ai.google.dev/) for AI-powered insights**Star ⭐ this repo if you found it helpful!**
+- [shadcn/ui](https://ui.shadcn.com/) for beautiful UI components- [Recharts](https://recharts.org/) for responsive chart library
 - [REST Countries API](https://restcountries.com/) for country data
 - All open-source contributors whose libraries made this project possible
 
@@ -990,3 +1064,6 @@ Backend test scaffolding is welcome—open a PR with a focused first suite (e.g.
 Made with ❤️ for a sustainable future 🌱
 
 **Star ⭐ this repo if you found it helpful!**
+
+
+```

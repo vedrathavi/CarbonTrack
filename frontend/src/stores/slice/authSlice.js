@@ -38,7 +38,7 @@ export const createAuthSlice = (set, get) => ({
             window.google.accounts.id.revoke();
           }
         } catch (e) {
-          console.debug("Google sign-out cleanup skipped");
+          console.debug("Google sign-out cleanup skipped",e);
         }
 
         try {
@@ -47,7 +47,7 @@ export const createAuthSlice = (set, get) => ({
             if (auth2 && auth2.signOut) await auth2.signOut();
           }
         } catch (e) {
-          console.debug("Legacy Google sign-out skipped");
+          console.debug("Legacy Google sign-out skipped",e);
         }
       }
 
