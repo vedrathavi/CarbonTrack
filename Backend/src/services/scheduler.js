@@ -19,7 +19,7 @@ function normalizeToUTCDate(d = new Date()) {
 export function initScheduler() {
   // Daily at 00:00 IST -> simulate TODAY for all homes
   cron.schedule(
-    "30 18 * * *",
+    "0 0 * * *",
     async () => {
       console.log(
         "[scheduler] daily job started (00:00 IST): simulating today"
