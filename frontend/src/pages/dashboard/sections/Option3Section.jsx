@@ -504,7 +504,7 @@ export default function InsightsSection() {
       )}
 
       {/* Error State */}
-      {insightsError && (
+      {/* {insightsError && (
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
           <h3 className="text-lg font-semibold text-red-800 mb-2">
@@ -512,7 +512,7 @@ export default function InsightsSection() {
           </h3>
           <p className="text-red-700 text-sm">{insightsError}</p>
         </div>
-      )}
+      )} */}
 
       {/* Empty State */}
       {!insightsLoading && filteredInsights.length === 0 && (
