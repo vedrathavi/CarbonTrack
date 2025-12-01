@@ -16,6 +16,7 @@ import emissionRouter from "./src/routes/emissionRoutes.js";
 import simulationRouter from "./src/routes/simulationRoutes.js";
 import dashboardRouter from "./src/routes/dashboardRoutes.js";
 import insightRouter from "./src/routes/insightRoutes.js";
+import healthRouter from "./src/routes/healthRoutes.js";
 import { initScheduler } from "./src/services/scheduler.js";
 
 const app = express();
@@ -52,6 +53,8 @@ app.use("/api/simulation", simulationRouter);
 app.use("/api/dashboard", dashboardRouter);
 // insight endpoints
 app.use("/api/insights", insightRouter);
+// health endpoints (wake up server)
+app.use("/api/health", healthRouter);
 
 // Connect to Mongo and start server after success
 const MONGO_URI = process.env.MONGO_URI;
