@@ -4,8 +4,8 @@ on:
   schedule:
     # Run at 11:57 PM UTC every day (3 minutes before midnight)
     # This ensures the server is awake when the scheduler runs at midnight
-    - cron: '57 23 * * *'
-  workflow_dispatch:  # Allow manual trigger from GitHub Actions tab
+    - cron: "57 23 * * *"
+  workflow_dispatch: # Allow manual trigger from GitHub Actions tab
 
 jobs:
   wake-server:
@@ -18,7 +18,7 @@ jobs:
         run: |
           echo "🔔 Waking up backend server at $(date)"
           echo "Backend URL: $BACKEND_URL"
-          
+
           # Retry up to 3 times with 30-second delays
           for i in {1..3}; do
             echo "⏳ Attempt $i of 3..."
@@ -39,7 +39,7 @@ jobs:
               fi
             fi
           done
-          
+
           echo "🚨 Failed to wake backend after 3 attempts"
           exit 1
 
